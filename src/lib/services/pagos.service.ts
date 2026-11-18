@@ -62,7 +62,12 @@ function reciboQuery() {
  * RF-C5 / reglas 4, 8 y 11: graba el pago con su recibo numerado y el crédito
  * en la cuenta corriente en UNA transacción. Un pago nunca supera la deuda.
  */
-export async function registrar(usuario: AuthUser, clienteId: number, input: unknown) {
+export async function registrar(
+  usuario: AuthUser,
+  clienteId: number,
+  input: unknown,
+  opciones?: { fecha?: Date },
+) {
   requireAuth(usuario);
   const data = parseOrThrow(registrarPagoSchema, input);
 
@@ -79,11 +84,12 @@ export async function registrar(usuario: AuthUser, clienteId: number, input: unk
     }
 
     const secuencia = await nextSecuencia(tx, "recibo");
+    const fecha = opciones?.fecha ?? new Date();
     const [pago] = await tx
       .insert(pagos)
       .values({
         numeroRecibo: secuencia.ultimo,
-        fecha: new Date(),
+        fecha,
         importe: data.importe,
         medio: data.medio,
         observacion: data.observacion,

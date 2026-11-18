@@ -102,7 +102,7 @@ async function buildFactura(executor: Executor, id: number) {
  * descuenta stock con movimientos y registra el débito en cuenta corriente.
  * O se graba todo o nada.
  */
-export async function emitir(usuario: AuthUser, input: unknown) {
+export async function emitir(usuario: AuthUser, input: unknown, opciones?: { fecha?: Date }) {
   requireAuth(usuario);
   const data = parseOrThrow(emitirFacturaSchema, input);
 
@@ -189,7 +189,7 @@ export async function emitir(usuario: AuthUser, input: unknown) {
     if (faltantes.length) throw err.stockInsuficiente(faltantes);
 
     const secuencia = await nextSecuencia(tx, "factura");
-    const fecha = new Date();
+    const fecha = opciones?.fecha ?? new Date();
 
     const [factura] = await tx
       .insert(facturas)

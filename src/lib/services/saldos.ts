@@ -1,13 +1,18 @@
 import { eq, sql } from "drizzle-orm";
 import { db, type Db, type Tx } from "@/lib/db";
-import { clientes, movimientosCuenta, secuencias } from "@/lib/db/schema";
+import { movimientosCuenta, secuencias } from "@/lib/db/schema";
 
-/** Regla 7 (RF-C4): saldo = débitos − créditos. Una sola fuente de verdad. */
+/**
+ * Regla 7 (RF-C4): saldo = débitos − créditos. Una sola fuente de verdad.
+ * Usamos identificadores calificados con sql.raw: Drizzle no califica las columnas
+ * dentro de fragmentos sql sueltos, y sin el prefijo la subconsulta se compararía
+ * contra el id de movimientos_cuenta en lugar del de clientes.
+ */
 export const saldoExpr = sql<number>`coalesce((
-  select sum(case when ${movimientosCuenta.tipo} = 'debito'
-    then ${movimientosCuenta.importe} else -${movimientosCuenta.importe} end)
-  from ${movimientosCuenta}
-  where ${movimientosCuenta.clienteId} = ${clientes.id}
+  select sum(case when "movimientos_cuenta"."tipo" = 'debito'
+    then "movimientos_cuenta"."importe" else -"movimientos_cuenta"."importe" end)
+  from "movimientos_cuenta"
+  where "movimientos_cuenta"."cliente_id" = "clientes"."id"
 ), 0)`;
 
 /** Saldo de un cliente dentro (o fuera) de una transacción. */

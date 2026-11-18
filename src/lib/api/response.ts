@@ -23,6 +23,18 @@ export function paginated<T>(
   return NextResponse.json({ data, page, pageSize, total, ...extra });
 }
 
+/** Un servicio devuelve el paginado completo; el adaptador solo lo serializa. */
+export function fromPaginated<T>(result: {
+  data: T[];
+  page: number;
+  pageSize: number;
+  total: number;
+  [key: string]: unknown;
+}) {
+  const { data, page, pageSize, total, ...extra } = result;
+  return paginated(data, page, pageSize, total, extra);
+}
+
 /** Sección 11.1: un único formato de error para toda la API. */
 export function errorResponse(error: unknown) {
   if (error instanceof ApiError) {
