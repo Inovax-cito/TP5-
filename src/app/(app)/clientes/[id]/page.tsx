@@ -180,7 +180,7 @@ export default async function ClienteDetallePage({
           </Suspense>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
               <CardTitle>Movimientos</CardTitle>
               <span className="tabular text-sm font-semibold">Saldo: {formatMoney(cuenta.saldo)}</span>
             </CardHeader>

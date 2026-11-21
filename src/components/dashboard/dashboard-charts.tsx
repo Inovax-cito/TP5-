@@ -24,7 +24,7 @@ const etiquetasForma: Record<string, string> = {
   cuenta_corriente: "Cuenta corriente",
 };
 
-const colores = ["#2563eb", "#16a34a", "#f59e0b", "#7c3aed", "#db2777"];
+const colores = ["#FF6A00", "#111111", "#FFB84D", "#9CA3AF", "#D1D5DB"];
 
 type Props = {
   ventasDiarias: Array<{ fecha: string; importe: number }>;
@@ -66,8 +66,8 @@ export function DashboardCharts({ ventasDiarias, porFormaDePago }: Props) {
       {
         label: "Ventas",
         data: ventasDiarias.map((v) => v.importe),
-        borderColor: "#2563eb",
-        backgroundColor: "rgba(37,99,235,0.12)",
+        borderColor: "#FF6A00",
+        backgroundColor: "rgba(255,106,0,0.12)",
         borderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 4,
@@ -112,7 +112,7 @@ export function DashboardCharts({ ventasDiarias, porFormaDePago }: Props) {
           <CardTitle>Ventas de los últimos 30 días</CardTitle>
           <CardDescription>Importe facturado por día, en hora de Argentina.</CardDescription>
         </CardHeader>
-        <CardContent className="h-72">
+        <CardContent className="h-64 sm:h-72">
           <Line data={datosLinea} options={opcionesLinea} />
         </CardContent>
       </Card>
@@ -122,7 +122,7 @@ export function DashboardCharts({ ventasDiarias, porFormaDePago }: Props) {
           <CardTitle>Formas de pago del mes</CardTitle>
           <CardDescription>Distribución de lo Facturado.</CardDescription>
         </CardHeader>
-        <CardContent className="relative h-56">
+        <CardContent className="relative h-52 sm:h-56">
           <Doughnut data={datosDona} options={opcionesDona} />
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pb-8">
             <span className="text-xs text-muted-foreground">Total del mes</span>

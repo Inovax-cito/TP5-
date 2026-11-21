@@ -25,7 +25,7 @@ export function StatCard({
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{titulo}</p>
-          <p className="tabular text-2xl font-bold tracking-tight">{valor}</p>
+          <p className="tabular break-words text-xl font-bold tracking-tight sm:text-2xl">{valor}</p>
           {detalle && <p className="text-xs text-muted-foreground">{detalle}</p>}
         </div>
         <div className={cn("rounded-lg p-2.5", tonos[tono])}>

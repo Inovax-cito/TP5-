@@ -39,7 +39,9 @@ export function Topbar({ user }: { user: AuthUser }) {
             <Menu className="h-5 w-5" />
             <span className="sr-only">Abrir menú</span>
           </Button>
-          <span className="text-sm font-black lg:hidden">Ferretería El Martillo</span>
+          <span className="max-w-[130px] truncate text-xs font-black sm:max-w-none sm:text-sm lg:hidden">
+            Ferretería El Martillo
+          </span>
         </div>
 
         <DropdownMenu>

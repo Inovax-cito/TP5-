@@ -67,7 +67,7 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
         </Card>
       )}
 
-      <Card className="print-full mx-auto max-w-4xl p-8">
+      <Card className="print-full mx-auto max-w-4xl p-5 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div>
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Factura</p>

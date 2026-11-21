@@ -73,7 +73,7 @@ export default async function InicioPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
             <div className="space-y-1.5">
               <CardTitle>Productos más vendidos</CardTitle>
               <CardDescription>Unidades vendidas en el mes.</CardDescription>
@@ -110,7 +110,7 @@ export default async function InicioPage() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
             <div className="space-y-1.5">
               <CardTitle>Reposición pendiente</CardTitle>
               <CardDescription>Productos por debajo del stock mínimo.</CardDescription>

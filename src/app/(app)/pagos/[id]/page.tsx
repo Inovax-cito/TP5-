@@ -43,7 +43,7 @@ export default async function ReciboPage({ params }: { params: Promise<{ id: str
         <PrintButton label="Imprimir recibo" />
       </div>
 
-      <Card className="print-full mx-auto max-w-2xl p-8">
+      <Card className="print-full mx-auto max-w-2xl p-5 sm:p-8">
         <div className="flex items-start justify-between gap-6">
           <div>
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Comprobante de pago</p>
