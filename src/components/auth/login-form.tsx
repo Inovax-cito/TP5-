@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { Wrench } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -81,14 +80,6 @@ export function LoginForm() {
               {cargando ? "Ingresando…" : "Ingresar"}
             </Button>
           </form>
-          <p className="mt-6 rounded-lg bg-muted p-3 text-xs text-muted-foreground">
-            Usuarios de prueba: <strong>laura@ferreteria.test</strong> / admin1234 ·{" "}
-            <strong>pablo@ferreteria.test</strong> / vendedor1234
-            <br />
-            <Link href="/" className="mt-1 inline-block font-semibold text-primaryText underline">
-              Volver al inicio
-            </Link>
-          </p>
         </CardContent>
       </Card>
     </div>
