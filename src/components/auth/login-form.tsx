@@ -44,14 +44,14 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-blue-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white via-orange-50 to-orange-100 p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="space-y-3 pb-2">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Wrench className="h-6 w-6" />
           </div>
           <CardTitle className="text-2xl">Ingresar al sistema</CardTitle>
-          <CardDescription>Facturación, stock y cuenta corriente de su comercio.</CardDescription>
+          <CardDescription>Facturación, stock y cuenta corriente de su ferretería.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={enviar} className="space-y-4">

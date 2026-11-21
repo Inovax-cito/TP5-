@@ -5,29 +5,31 @@
 @layer base {
   :root {
     --font-geist-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+
+    /* Identidad: naranja fuerte, negro y blanco. */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 214 95% 93%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
-    --success: 142 71% 45%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 21 92% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 24 24% 95%;
+    --secondary-foreground: 0 0% 8%;
+    --muted: 24 18% 95%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 24 95% 93%;
+    --accent-foreground: 0 0% 8%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 64% 34%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --warning: 38 92% 45%;
+    --warning-foreground: 0 0% 8%;
+    --border: 24 14% 86%;
+    --input: 24 14% 86%;
+    --ring: 21 92% 42%;
     --radius: 0.65rem;
   }
 

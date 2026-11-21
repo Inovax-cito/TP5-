@@ -32,7 +32,7 @@ export function SidebarNav({ user, onNavigate }: { user: AuthUser; onNavigate?: 
         </div>
         <div>
           <p className="text-sm font-bold leading-tight">Gestión Comercial</p>
-          <p className="text-[11px] text-muted-foreground">Panel de administración</p>
+          <p className="text-[11px] text-muted-foreground">Ferretería · Gestión comercial</p>
         </div>
       </div>
 
