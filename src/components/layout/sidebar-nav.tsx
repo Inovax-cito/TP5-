@@ -26,18 +26,18 @@ export function SidebarNav({ user, onNavigate }: { user: AuthUser; onNavigate?: 
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-16 items-center gap-3 border-b px-6">
+      <div className="flex h-16 items-center gap-3 border-b border-white/10 px-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
           <Wrench className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-sm font-bold leading-tight">Gestión Comercial</p>
-          <p className="text-[11px] text-muted-foreground">Ferretería · Gestión comercial</p>
+          <p className="text-sm font-black leading-tight text-white">Ferretería El Martillo</p>
+          <p className="text-[11px] text-white/50">Gestión comercial</p>
         </div>
       </div>
 
       <nav className="flex-1 space-y-1 p-3">
-        <p className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Módulos</p>
+        <p className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-white/40">Módulos</p>
         {MODULOS.filter((m) => m.todos || user.rol === "admin").map((modulo) => {
           const activo = modulo.href === "/"
             ? pathname === "/"
@@ -51,8 +51,8 @@ export function SidebarNav({ user, onNavigate }: { user: AuthUser; onNavigate?: 
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 activo
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                  ? "bg-primary font-semibold text-[#111111] shadow-sm"
+                  : "text-white/70 hover:bg-white/10 hover:text-white",
               )}
             >
               <Icono className="h-4 w-4" />
@@ -62,8 +62,8 @@ export function SidebarNav({ user, onNavigate }: { user: AuthUser; onNavigate?: 
         })}
       </nav>
 
-      <div className="border-t p-4">
-        <p className="text-[11px] text-muted-foreground">
+      <div className="border-t border-white/10 p-4">
+        <p className="text-[11px] text-white/50">
           {user.rol === "admin" ? "Administrador" : "Vendedor"} · v1.0
         </p>
       </div>

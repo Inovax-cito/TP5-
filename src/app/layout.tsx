@@ -3,8 +3,8 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Gestión Comercial · Ferretería",
-  description: "Facturación, stock y cuenta corriente de una ferretería",
+  title: "Ferretería El Martillo · Gestión Comercial",
+  description: "Facturación, stock y cuenta corriente de Ferretería El Martillo",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

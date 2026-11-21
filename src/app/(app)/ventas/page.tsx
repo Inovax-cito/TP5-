@@ -101,7 +101,7 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
       <Card className="flex items-center justify-between border-primary/20 bg-primary/5 p-5">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Total emitido</p>
-          <p className="tabular text-2xl font-bold text-primary">{formatMoney(facturas.totalEmitido)}</p>
+          <p className="tabular text-2xl font-bold text-primaryText">{formatMoney(facturas.totalEmitido)}</p>
         </div>
         <p className="text-sm text-muted-foreground">{facturas.total} facturas en el filtro</p>
       </Card>

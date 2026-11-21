@@ -94,7 +94,7 @@ export function MovimientosTable({
               <TableCell className="text-xs">{movimiento.usuario.nombre}</TableCell>
               <TableCell>
                 {movimiento.referencia ? (
-                  <Link href={`/ventas/${movimiento.referencia.facturaId}`} className="text-xs font-medium text-primary hover:underline">
+                  <Link href={`/ventas/${movimiento.referencia.facturaId}`} className="text-xs font-medium text-primaryText hover:underline">
                     {movimiento.referencia.numero}
                   </Link>
                 ) : (

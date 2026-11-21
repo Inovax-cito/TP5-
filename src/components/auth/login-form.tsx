@@ -44,14 +44,15 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white via-orange-50 to-orange-100 p-4">
-      <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="space-y-3 pb-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+    <div className="flex min-h-screen items-center justify-center bg-[#111111] p-4">
+      <Card className="w-full max-w-md overflow-hidden border-0 shadow-2xl">
+        <div className="h-2 bg-primary" />
+        <CardHeader className="space-y-3 pb-2 pt-6">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-[#111111]">
             <Wrench className="h-6 w-6" />
           </div>
-          <CardTitle className="text-2xl">Ingresar al sistema</CardTitle>
-          <CardDescription>Facturación, stock y cuenta corriente de su ferretería.</CardDescription>
+          <CardTitle className="text-2xl font-black">Ferretería El Martillo</CardTitle>
+          <CardDescription>Ingresá al sistema de facturación, stock y cuenta corriente.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={enviar} className="space-y-4">
@@ -84,7 +85,7 @@ export function LoginForm() {
             Usuarios de prueba: <strong>laura@ferreteria.test</strong> / admin1234 ·{" "}
             <strong>pablo@ferreteria.test</strong> / vendedor1234
             <br />
-            <Link href="/" className="mt-1 inline-block underline">
+            <Link href="/" className="mt-1 inline-block font-semibold text-primaryText underline">
               Volver al inicio
             </Link>
           </p>

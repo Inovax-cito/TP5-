@@ -251,7 +251,7 @@ export function NuevaVentaForm({
                         {producto.codigo} · {producto.existencia} disponibles
                       </span>
                     </span>
-                    <Plus className="h-4 w-4 text-primary" />
+                    <Plus className="h-4 w-4 text-primaryText" />
                   </button>
                 ))}
                 {productosFiltrados.length === 0 && (

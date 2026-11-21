@@ -10,7 +10,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex min-h-screen">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r bg-card lg:block no-print">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-black/10 bg-[#111111] text-white lg:block no-print">
         <SidebarNav user={user} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col lg:pl-64">

@@ -33,19 +33,19 @@ export function Topbar({ user }: { user: AuthUser }) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 px-4 backdrop-blur lg:px-8 no-print">
+      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-black/10 bg-background/95 px-4 backdrop-blur lg:px-8 no-print">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMenuAbierto(true)}>
             <Menu className="h-5 w-5" />
             <span className="sr-only">Abrir menú</span>
           </Button>
-          <span className="text-sm font-semibold lg:hidden">Gestión Comercial</span>
+          <span className="text-sm font-black lg:hidden">Ferretería El Martillo</span>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primaryText">
                 <UserIcon className="h-4 w-4" />
               </span>
               <span className="hidden text-left sm:block">
@@ -68,7 +68,7 @@ export function Topbar({ user }: { user: AuthUser }) {
       </header>
 
       <Dialog open={menuAbierto} onOpenChange={setMenuAbierto}>
-        <DialogContent className="left-0 top-0 h-full max-w-[280px] translate-x-0 translate-y-0 rounded-none p-0 data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left">
+        <DialogContent className="left-0 top-0 h-full max-w-[280px] translate-x-0 translate-y-0 rounded-none border-0 bg-[#111111] p-0 text-white data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left">
           <DialogTitle className="sr-only">Menú de navegación</DialogTitle>
           <SidebarNav user={user} onNavigate={() => setMenuAbierto(false)} />
         </DialogContent>

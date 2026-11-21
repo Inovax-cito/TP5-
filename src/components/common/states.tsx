@@ -46,7 +46,7 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
       <p className="font-semibold">No se pudo cargar la información</p>
       <p className="text-sm text-muted-foreground">{message}</p>
       {onRetry && (
-        <button onClick={onRetry} className="text-sm font-medium text-primary hover:underline">
+        <button onClick={onRetry} className="text-sm font-medium text-primaryText hover:underline">
           Reintentar
         </button>
       )}

@@ -15,7 +15,7 @@ export function StatCard({
   tono?: "primary" | "success" | "warning" | "muted";
 }) {
   const tonos = {
-    primary: "bg-primary/10 text-primary",
+    primary: "bg-primary/10 text-primaryText",
     success: "bg-success/10 text-success",
     warning: "bg-warning/10 text-warning",
     muted: "bg-muted text-muted-foreground",
