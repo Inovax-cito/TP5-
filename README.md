@@ -16,7 +16,7 @@ Aplicación full stack para un comercio minorista: factura ventas, controla exis
 
 > Reemplazar los legajos y nombres de ejemplo por los reales. Aviso por WhatsApp: *"El grupo N lo formamos 55555, 55556 y 55557"*.
 
-- **URL pública:** `https://<proyecto>.vercel.app` (pendiente de publicación).
+- **URL pública:** `https://ferreteria-elmartillo-parcial2.vercel.app` (pendiente de verificación; no llevar `www.`).
 - **Repositorio GitHub:** `https://github.com/<usuario>/<repo>` (pendiente: crear el repo y configurar el remote).
 
 El despliegue real a Vercel/Turso **no se ejecutó**; la sección [Despliegue](#despliegue-vercel--turso) describe los pasos y las variables necesarias. Para ensayar la defensa, ver [DEFENSA.md](./DEFENSA.md).
