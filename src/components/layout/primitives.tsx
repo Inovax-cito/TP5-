@@ -132,6 +132,12 @@ export function Grid({
 const textVariants = cva("", {
   variants: {
     size: {
+      micro: "text-micro",
+      label: "text-label",
+      body: "text-body",
+      section: "text-section",
+      title: "text-title",
+      display: "text-display",
       xs: "text-xs",
       sm: "text-sm",
       base: "text-base",
@@ -152,6 +158,7 @@ const textVariants = cva("", {
       success: "text-success",
       warning: "text-warning",
       destructive: "text-destructive",
+      info: "text-info",
     },
     // Rótulos en mayúsculas ("FACTURA", "COMPRADOR").
     caps: {
@@ -191,6 +198,9 @@ export function Text({
 const titleVariants = cva("", {
   variants: {
     size: {
+      display: "text-display",
+      title: "text-title",
+      section: "text-section",
       lg: "text-lg",
       xl: "text-xl",
       "2xl": "text-2xl",

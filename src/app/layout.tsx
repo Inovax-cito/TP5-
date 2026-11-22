@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
-import { Toaster } from "sonner";
+import { Geist, Geist_Mono } from "next/font/google";
+import { AppToaster } from "@/components/common/app-toaster";
 import "./globals.css";
+
+/** Tipografías: Geist para la interfaz y Geist Mono para importes, números y códigos. */
+const geistSans = Geist({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Ferretería El Martillo · Gestión Comercial",
@@ -9,10 +14,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es-AR">
+    <html lang="es-AR" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         {children}
-        <Toaster position="top-right" richColors closeButton />
+        <AppToaster />
       </body>
     </html>
   );
