@@ -5,6 +5,7 @@ import { ArrowLeft, Boxes, Package, TriangleAlert } from "lucide-react";
 import { PageHeader } from "@/components/common/page-header";
 import { PaginationLinks } from "@/components/common/pagination-links";
 import { StatCard } from "@/components/common/stat-card";
+import { Grid, Stack, Text } from "@/components/layout/primitives";
 import { MovimientosTable } from "@/components/productos/movimientos-table";
 import { MovimientoCreateButton } from "@/components/productos/movimiento-create-button";
 import { ProductImage } from "@/components/productos/product-image";
@@ -56,7 +57,7 @@ export default async function ProductoDetallePage({
   ]);
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <Button asChild variant="ghost" size="sm">
         <Link href="/productos">
           <ArrowLeft className="h-4 w-4" /> Volver a productos
@@ -76,18 +77,18 @@ export default async function ProductoDetallePage({
 
       <Card className="flex items-center gap-4 p-4">
         <ProductImage src={producto.imagen} alt={producto.descripcion} className="h-20 w-20" />
-        <div className="min-w-0 space-y-1">
-          <p className="break-words font-semibold">{producto.descripcion}</p>
-          <p className="text-xs text-muted-foreground">{producto.codigo} · {producto.categoria.nombre}</p>
-          <p className="text-xs text-muted-foreground">Imagen del catálogo</p>
-        </div>
+        <Stack gap="1" className="min-w-0">
+          <Text weight="semibold" className="break-words">{producto.descripcion}</Text>
+          <Text size="xs" tone="muted">{producto.codigo} · {producto.categoria.nombre}</Text>
+          <Text size="xs" tone="muted">Imagen del catálogo</Text>
+        </Stack>
       </Card>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <Grid gap="4" cols={{ sm: 3 }}>
         <StatCard titulo="Existencia actual" valor={String(producto.existencia)} icono={Boxes} tono={producto.bajoMinimo ? "warning" : "success"} detalle={producto.bajoMinimo ? "Por debajo del mínimo" : "Existencia normal"} />
         <StatCard titulo="Precio de venta" valor={formatMoney(producto.precio)} icono={Package} />
         <StatCard titulo="Stock mínimo" valor={String(producto.stockMinimo)} icono={TriangleAlert} detalle="Aviso de reposición" tono="muted" />
-      </div>
+      </Grid>
 
       <Card>
         <CardHeader>
@@ -100,6 +101,6 @@ export default async function ProductoDetallePage({
           <PaginationLinks page={movimientos.page} pageSize={movimientos.pageSize} total={movimientos.total} />
         </CardContent>
       </Card>
-    </div>
+    </Stack>
   );
 }

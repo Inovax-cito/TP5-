@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import * as productosService from "@/lib/services/productos.service";
+import * as productosService from "@/lib/services/productos.service";
+import { Stack } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
 const valor = (params: Search, clave: string) => {
@@ -67,7 +68,7 @@ export default async function MovimientosStockPage({ searchParams }: { searchPar
   ];
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <Button asChild variant="ghost" size="sm">
         <Link href="/productos">
           <ArrowLeft className="h-4 w-4" /> Volver a productos
@@ -89,6 +90,6 @@ export default async function MovimientosStockPage({ searchParams }: { searchPar
           params={{ productoId, tipo, desde, hasta }}
         />
       </Card>
-    </div>
+    </Stack>
   );
 }

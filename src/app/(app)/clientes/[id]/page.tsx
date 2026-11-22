@@ -8,6 +8,7 @@ import { StatCard } from "@/components/common/stat-card";
 import { EstadoFacturaBadge } from "@/components/common/status-badge";
 import { ClienteActions } from "@/components/clientes/cliente-actions";
 import { PagoCreateButton } from "@/components/clientes/pago-create-button";
+import { Grid, Inline, Stack, Text } from "@/components/layout/primitives";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -55,7 +56,7 @@ export default async function ClienteDetallePage({
   const cuenta = await clientesService.cuenta(user, clienteId, cuentaQuery);
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <Button asChild variant="ghost" size="sm">
         <Link href="/clientes">
           <ArrowLeft className="h-4 w-4" /> Volver a clientes
@@ -73,7 +74,7 @@ export default async function ClienteDetallePage({
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <Grid gap="4" cols={{ sm: 3 }}>
         <StatCard titulo="Saldo actual" valor={formatMoney(cliente.saldo)} icono={CreditCard} tono={cliente.saldo > 0 ? "warning" : "success"} />
         <StatCard
           titulo="Límite de crédito"
@@ -87,7 +88,7 @@ export default async function ClienteDetallePage({
           icono={CreditCard}
           tono="primary"
         />
-      </div>
+      </Grid>
 
       <Tabs defaultValue="datos">
         <TabsList>
@@ -97,33 +98,33 @@ export default async function ClienteDetallePage({
 
         <TabsContent value="datos" className="space-y-4">
           <Card className="p-6">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="flex items-start gap-3">
+            <Grid gap="4" cols={{ sm: 2, lg: 4 }}>
+              <Inline align="start" gap="3">
                 <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Domicilio</p>
-                  <p className="text-sm font-medium">{cliente.domicilio ?? "-"}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
+                <Stack>
+                  <Text size="xs" tone="muted">Domicilio</Text>
+                  <Text size="sm" weight="medium">{cliente.domicilio ?? "-"}</Text>
+                </Stack>
+              </Inline>
+              <Inline align="start" gap="3">
                 <Phone className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Teléfono</p>
-                  <p className="text-sm font-medium">{cliente.telefono ?? "-"}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
+                <Stack>
+                  <Text size="xs" tone="muted">Teléfono</Text>
+                  <Text size="sm" weight="medium">{cliente.telefono ?? "-"}</Text>
+                </Stack>
+              </Inline>
+              <Inline align="start" gap="3">
                 <Mail className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Email</p>
-                  <p className="text-sm font-medium">{cliente.email ?? "-"}</p>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Cuenta corriente</p>
-                <p className="text-sm font-medium">{cliente.cuentaCorriente ? "Habilitada" : "No habilitada"}</p>
-              </div>
-            </div>
+                <Stack>
+                  <Text size="xs" tone="muted">Email</Text>
+                  <Text size="sm" weight="medium">{cliente.email ?? "-"}</Text>
+                </Stack>
+              </Inline>
+              <Stack>
+                <Text size="xs" tone="muted">Cuenta corriente</Text>
+                <Text size="sm" weight="medium">{cliente.cuentaCorriente ? "Habilitada" : "No habilitada"}</Text>
+              </Stack>
+            </Grid>
           </Card>
 
           <Card>
@@ -132,7 +133,7 @@ export default async function ClienteDetallePage({
             </CardHeader>
             <CardContent>
               {cliente.ultimasFacturas.length === 0 ? (
-                <p className="py-8 text-center text-sm text-muted-foreground">Este cliente todavía no tiene facturas.</p>
+                <Text size="sm" tone="muted" align="center" className="py-8">Este cliente todavía no tiene facturas.</Text>
               ) : (
                 <Table>
                   <TableHeader>
@@ -182,11 +183,11 @@ export default async function ClienteDetallePage({
           <Card>
             <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
               <CardTitle>Movimientos</CardTitle>
-              <span className="tabular text-sm font-semibold">Saldo: {formatMoney(cuenta.saldo)}</span>
+              <Text as="span" size="sm" weight="semibold" tabular>Saldo: {formatMoney(cuenta.saldo)}</Text>
             </CardHeader>
             <CardContent>
               {cuenta.movimientos.length === 0 ? (
-                <p className="py-10 text-center text-sm text-muted-foreground">No hay movimientos en el período.</p>
+                <Text size="sm" tone="muted" align="center" className="py-10">No hay movimientos en el período.</Text>
               ) : (
                 <Table>
                   <TableHeader>
@@ -220,13 +221,13 @@ export default async function ClienteDetallePage({
                               {movimiento.descripcion}
                             </Link>
                           ) : (
-                            <span className="text-sm">{movimiento.descripcion}</span>
+                            <Text as="span" size="sm">{movimiento.descripcion}</Text>
                           )}
                         </TableCell>
                         <TableCell>
-                          <span className={`text-xs font-semibold ${movimiento.tipo === "debito" ? "text-destructive" : "text-success"}`}>
+                          <Text as="span" size="xs" weight="semibold" tone={movimiento.tipo === "debito" ? "destructive" : "success"}>
                             {movimiento.tipo === "debito" ? "Débito" : "Crédito"}
-                          </span>
+                          </Text>
                         </TableCell>
                         <TableCell className={`tabular text-right font-medium ${movimiento.tipo === "debito" ? "text-destructive" : "text-success"}`}>
                           {movimiento.tipo === "debito" ? "+" : "-"}
@@ -242,6 +243,6 @@ export default async function ClienteDetallePage({
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </Stack>
   );
 }

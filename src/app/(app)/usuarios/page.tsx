@@ -12,7 +12,8 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import * as usuariosService from "@/lib/services/usuarios.service";
+import * as usuariosService from "@/lib/services/usuarios.service";
+import { Stack } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
 const valor = (params: Search, clave: string) => {
@@ -51,7 +52,7 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
   ];
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <PageHeader
         title="Usuarios"
         description="Gestión de accesos, roles y contraseñas del sistema."
@@ -104,6 +105,6 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
           </>
         )}
       </Card>
-    </div>
+    </Stack>
   );
 }

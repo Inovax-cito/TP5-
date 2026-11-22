@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PrintButton } from "@/components/common/print-button";
+import { Grid, Inline, Stack, Text, Title } from "@/components/layout/primitives";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -33,72 +34,72 @@ export default async function ReciboPage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between no-print">
+    <Stack gap="6">
+      <Inline align="center" justify="between" className="no-print">
         <Button asChild variant="ghost" size="sm">
           <Link href={`/clientes/${recibo.cliente.id}`}>
             <ArrowLeft className="h-4 w-4" /> Volver al cliente
           </Link>
         </Button>
         <PrintButton label="Imprimir recibo" />
-      </div>
+      </Inline>
 
       <Card className="print-full mx-auto max-w-2xl p-5 sm:p-8">
-        <div className="flex items-start justify-between gap-6">
-          <div>
-            <p className="text-xs uppercase tracking-widest text-muted-foreground">Comprobante de pago</p>
-            <h1 className="mt-1 text-3xl font-bold">{recibo.numeroRecibo}</h1>
-          </div>
-          <div className="text-right text-sm">
-            <p className="font-bold">Gestión Comercial</p>
-            <p className="text-muted-foreground">Comprobante interno</p>
-            <p className="text-muted-foreground">Sin validez fiscal</p>
-          </div>
-        </div>
+        <Inline align="start" justify="between" gap="6">
+          <Stack>
+            <Text size="xs" caps="widest" tone="muted">Comprobante de pago</Text>
+            <Title className="mt-1">{recibo.numeroRecibo}</Title>
+          </Stack>
+          <Stack align="right" className="text-sm">
+            <Text weight="bold">Gestión Comercial</Text>
+            <Text tone="muted">Comprobante interno</Text>
+            <Text tone="muted">Sin validez fiscal</Text>
+          </Stack>
+        </Inline>
 
         <Separator className="my-6" />
 
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Cliente</p>
-            <p className="font-semibold">{recibo.cliente.nombre}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Fecha</p>
-            <p className="font-semibold">{formatDateTimeArg(recibo.fecha)}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Medio de pago</p>
-            <p className="font-semibold">{medios[recibo.medio] ?? recibo.medio}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Registrado por</p>
-            <p className="font-semibold">{recibo.usuario.nombre}</p>
-          </div>
-        </div>
+        <Grid gap="6" cols={{ sm: 2 }}>
+          <Stack>
+            <Text size="xs" caps="wide" tone="muted">Cliente</Text>
+            <Text weight="semibold">{recibo.cliente.nombre}</Text>
+          </Stack>
+          <Stack>
+            <Text size="xs" caps="wide" tone="muted">Fecha</Text>
+            <Text weight="semibold">{formatDateTimeArg(recibo.fecha)}</Text>
+          </Stack>
+          <Stack>
+            <Text size="xs" caps="wide" tone="muted">Medio de pago</Text>
+            <Text weight="semibold">{medios[recibo.medio] ?? recibo.medio}</Text>
+          </Stack>
+          <Stack>
+            <Text size="xs" caps="wide" tone="muted">Registrado por</Text>
+            <Text weight="semibold">{recibo.usuario.nombre}</Text>
+          </Stack>
+        </Grid>
 
         <Separator className="my-6" />
 
-        <div className="rounded-lg bg-muted p-6 text-center">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Importe abonado</p>
-          <p className="tabular mt-1 text-3xl font-bold">{formatMoney(recibo.importe)}</p>
-        </div>
+        <Stack align="center" className="rounded-lg bg-muted p-6">
+          <Text size="xs" caps="wide" tone="muted">Importe abonado</Text>
+          <Text size="3xl" weight="bold" tabular className="mt-1">{formatMoney(recibo.importe)}</Text>
+        </Stack>
 
         {recibo.observacion && (
-          <p className="mt-6 text-sm text-muted-foreground">
-            <strong>Observación:</strong> {recibo.observacion}
-          </p>
+          <Text size="sm" tone="muted" className="mt-6">
+            <Text as="strong">Observación:</Text> {recibo.observacion}
+          </Text>
         )}
 
-        <div className="mt-10 space-y-1 text-right text-sm">
-          <p className="font-semibold">Saldo posterior del cliente</p>
-          <p className="tabular text-lg">{formatMoney(recibo.saldoCliente ?? 0)}</p>
-        </div>
+        <Stack gap="1" align="right" className="mt-10 text-sm">
+          <Text weight="semibold">Saldo posterior del cliente</Text>
+          <Text size="lg" tabular>{formatMoney(recibo.saldoCliente ?? 0)}</Text>
+        </Stack>
 
-        <div className="mt-12 border-t pt-6 text-center text-xs text-muted-foreground">
+        <Text as="div" size="xs" tone="muted" align="center" className="mt-12 border-t pt-6">
           Recibo generado por el sistema de gestión comercial
-        </div>
+        </Text>
       </Card>
-    </div>
+    </Stack>
   );
 }

@@ -19,7 +19,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { formatMoney } from "@/lib/format";
 import * as categoriasService from "@/lib/services/categorias.service";
-import * as productosService from "@/lib/services/productos.service";
+import * as productosService from "@/lib/services/productos.service";
+import { Inline, Stack } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
 const valor = (params: Search, clave: string) => {
@@ -77,7 +78,7 @@ export default async function ProductosPage({ searchParams }: { searchParams: Pr
   const urlBase = { q, categoriaId, bajoMinimo: bajoMinimo ? "true" : undefined, activo };
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <PageHeader
         title="Productos"
         description="Catálogo, existencias y movimientos de stock."
@@ -156,14 +157,14 @@ export default async function ProductosPage({ searchParams }: { searchParams: Pr
                     <TableCell className="text-sm text-muted-foreground">{producto.categoria.nombre}</TableCell>
                     <TableCell className="tabular text-right font-medium">{formatMoney(producto.precio)}</TableCell>
                     <TableCell className="tabular text-right">
-                      <span className="inline-flex items-center gap-2">
+                      <Inline as="span" inline align="center" gap="2">
                         {producto.existencia}
                         {producto.bajoMinimo && (
                           <Badge variant="warning" title="Bajo el stock mínimo">
                             <TriangleAlert className="h-3 w-3" /> Bajo mínimo
                           </Badge>
                         )}
-                      </span>
+                      </Inline>
                     </TableCell>
                     <TableCell>
                       <ActivoBadge activo={producto.activo} labelActivo="Activo" labelInactivo="Inactivo" />
@@ -186,6 +187,6 @@ export default async function ProductosPage({ searchParams }: { searchParams: Pr
           </>
         )}
       </Card>
-    </div>
+    </Stack>
   );
 }

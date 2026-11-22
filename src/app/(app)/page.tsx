@@ -4,6 +4,7 @@ import { ArrowUpRight, CircleAlert, CreditCard, ReceiptText, TrendingUp } from "
 import { DashboardCharts } from "@/components/dashboard/dashboard-charts";
 import { PageHeader } from "@/components/common/page-header";
 import { StatCard } from "@/components/common/stat-card";
+import { Grid, Stack, Text } from "@/components/layout/primitives";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +24,7 @@ export default async function InicioPage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <PageHeader
         title={`Hola, ${user.nombre.split(" ")[0]}`}
         description="Resumen de la actividad comercial de tu negocio."
@@ -36,7 +37,7 @@ export default async function InicioPage() {
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <Grid gap="4" cols={{ sm: 2, xl: 4 }}>
         <StatCard
           titulo="Ventas del día"
           valor={formatMoney(tablero.hoy.importe)}
@@ -64,25 +65,25 @@ export default async function InicioPage() {
           icono={CircleAlert}
           tono={tablero.bajoMinimo.cantidad > 0 ? "warning" : "muted"}
         />
-      </div>
+      </Grid>
 
       <DashboardCharts
         ventasDiarias={tablero.ventasDiarias}
         porFormaDePago={tablero.porFormaDePago}
       />
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <Grid gap="4" cols={{ lg: 2 }}>
         <Card>
           <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
-            <div className="space-y-1.5">
+            <Stack gap="1.5">
               <CardTitle>Productos más vendidos</CardTitle>
               <CardDescription>Unidades vendidas en el mes.</CardDescription>
-            </div>
+            </Stack>
             <Badge variant="secondary">Top 5</Badge>
           </CardHeader>
           <CardContent>
             {tablero.masVendidos.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">Todavía no hay ventas en el mes.</p>
+              <Text size="sm" tone="muted" align="center" className="py-8">Todavía no hay ventas en el mes.</Text>
             ) : (
               <Table>
                 <TableHeader>
@@ -96,8 +97,8 @@ export default async function InicioPage() {
                   {tablero.masVendidos.map((producto) => (
                     <TableRow key={producto.productoId}>
                       <TableCell>
-                        <p className="font-medium">{producto.descripcion}</p>
-                        <p className="text-xs text-muted-foreground">{producto.codigo}</p>
+                        <Text weight="medium">{producto.descripcion}</Text>
+                        <Text size="xs" tone="muted">{producto.codigo}</Text>
                       </TableCell>
                       <TableCell className="tabular text-right">{producto.unidades}</TableCell>
                       <TableCell className="tabular text-right font-medium">{formatMoney(producto.importe)}</TableCell>
@@ -111,10 +112,10 @@ export default async function InicioPage() {
 
         <Card>
           <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
-            <div className="space-y-1.5">
+            <Stack gap="1.5">
               <CardTitle>Reposición pendiente</CardTitle>
               <CardDescription>Productos por debajo del stock mínimo.</CardDescription>
-            </div>
+            </Stack>
             <Button asChild variant="ghost" size="sm">
               <Link href="/productos?bajoMinimo=true">
                 Ver todos <ArrowUpRight className="h-4 w-4" />
@@ -123,7 +124,7 @@ export default async function InicioPage() {
           </CardHeader>
           <CardContent>
             {reposicion.data.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">Todas las existencias están en orden.</p>
+              <Text size="sm" tone="muted" align="center" className="py-8">Todas las existencias están en orden.</Text>
             ) : (
               <Table>
                 <TableHeader>
@@ -137,8 +138,8 @@ export default async function InicioPage() {
                   {reposicion.data.map((producto) => (
                     <TableRow key={producto.id}>
                       <TableCell>
-                        <p className="font-medium">{producto.descripcion}</p>
-                        <p className="text-xs text-muted-foreground">{producto.codigo}</p>
+                        <Text weight="medium">{producto.descripcion}</Text>
+                        <Text size="xs" tone="muted">{producto.codigo}</Text>
                       </TableCell>
                       <TableCell className="tabular text-right font-semibold text-warning">{producto.existencia}</TableCell>
                       <TableCell className="tabular text-right text-muted-foreground">{producto.stockMinimo}</TableCell>
@@ -149,7 +150,7 @@ export default async function InicioPage() {
             )}
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </Grid>
+    </Stack>
   );
 }

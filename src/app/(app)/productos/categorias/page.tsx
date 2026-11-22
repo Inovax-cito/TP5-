@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import * as categoriasService from "@/lib/services/categorias.service";
+import * as categoriasService from "@/lib/services/categorias.service";
+import { Stack, Text } from "@/components/layout/primitives";
 
 export default async function CategoriasPage() {
   const user = await getCurrentUser();
@@ -21,7 +22,7 @@ export default async function CategoriasPage() {
   const categorias = await categoriasService.listarConProductos(user);
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <Button asChild variant="ghost" size="sm">
         <Link href="/productos">
           <ArrowLeft className="h-4 w-4" /> Volver a productos
@@ -57,7 +58,7 @@ export default async function CategoriasPage() {
                       title={`Ver ${categoria.total} productos de ${categoria.nombre}`}
                     >
                       {categoria.productos.length === 0 ? (
-                        <span className="text-xs text-muted-foreground">Sin productos</span>
+                        <Text as="span" size="xs" tone="muted">Sin productos</Text>
                       ) : (
                         <>
                           {categoria.productos.map((producto) => (
@@ -69,9 +70,9 @@ export default async function CategoriasPage() {
                             />
                           ))}
                           {categoria.total > categoria.productos.length && (
-                            <span className="text-xs text-muted-foreground">
+                            <Text as="span" size="xs" tone="muted">
                               +{categoria.total - categoria.productos.length}
-                            </span>
+                            </Text>
                           )}
                         </>
                       )}
@@ -87,6 +88,6 @@ export default async function CategoriasPage() {
         )}
       </Card>
       <Suspense fallback={null} />
-    </div>
+    </Stack>
   );
 }

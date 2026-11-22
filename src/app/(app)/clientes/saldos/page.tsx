@@ -9,7 +9,8 @@ import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { formatMoney } from "@/lib/format";
-import * as clientesService from "@/lib/services/clientes.service";
+import * as clientesService from "@/lib/services/clientes.service";
+import { Grid, Stack } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
 
@@ -23,7 +24,7 @@ export default async function SaldosPage({ searchParams }: { searchParams: Promi
   const clientes = await clientesService.listar(user, query);
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <Button asChild variant="ghost" size="sm">
         <Link href="/clientes">
           <ArrowLeft className="h-4 w-4" /> Volver a clientes
@@ -32,7 +33,7 @@ export default async function SaldosPage({ searchParams }: { searchParams: Promi
 
       <PageHeader title="Saldos" description="Clientes con deuda, de mayor a menor." />
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <Grid gap="4" cols={{ sm: 2 }}>
         <StatCard
           titulo="Total adeudado"
           valor={formatMoney(clientes.totalAdeudado ?? 0)}
@@ -41,7 +42,7 @@ export default async function SaldosPage({ searchParams }: { searchParams: Promi
           tono="warning"
         />
         <StatCard titulo="Clientes con deuda" valor={String(clientes.total)} icono={Users} tono="muted" />
-      </div>
+      </Grid>
 
       <Card>
         <Table>
@@ -89,6 +90,6 @@ export default async function SaldosPage({ searchParams }: { searchParams: Promi
           params={{ conDeuda: "true", orden: "saldo" }}
         />
       </Card>
-    </div>
+    </Stack>
   );
 }

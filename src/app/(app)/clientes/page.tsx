@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/common/states";
 import { ActivoBadge } from "@/components/common/status-badge";
 import { ClienteActions } from "@/components/clientes/cliente-actions";
 import { ClienteCreateButton } from "@/components/clientes/cliente-create-button";
+import { Stack, Text } from "@/components/layout/primitives";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -62,7 +63,7 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
   ];
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <PageHeader
         title="Clientes"
         description="Fichas, saldos y cuenta corriente."
@@ -78,11 +79,11 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
 
       {conDeuda && clientes.totalAdeudado !== undefined && (
         <Card className="flex items-center justify-between border-warning/30 bg-warning/5 p-5">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Total adeudado</p>
-            <p className="tabular text-2xl font-bold text-warning">{formatMoney(clientes.totalAdeudado)}</p>
-          </div>
-          <p className="text-sm text-muted-foreground">{clientes.total} clientes con deuda</p>
+          <Stack>
+            <Text size="xs" weight="semibold" caps="wide" tone="muted">Total adeudado</Text>
+            <Text size="2xl" weight="bold" tone="warning" tabular>{formatMoney(clientes.totalAdeudado)}</Text>
+          </Stack>
+          <Text size="sm" tone="muted">{clientes.total} clientes con deuda</Text>
         </Card>
       )}
 
@@ -121,13 +122,12 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
                     <TableCell className="text-xs text-muted-foreground">{cliente.email ?? cliente.telefono ?? "-"}</TableCell>
                     <TableCell>
                       {cliente.cuentaCorriente ? (
-                        <span className="text-xs text-muted-foreground">
-                          Límite {cliente.limiteCredito === null ? "sin definir" : formatMoney(cliente.limiteCredito)}
-                          <br />
-                          Disponible {cliente.disponible === null ? "—" : formatMoney(cliente.disponible)}
-                        </span>
+                        // whitespace-pre-line corta la línea igual que el <br> que había antes.
+                        <Text as="span" size="xs" tone="muted" className="whitespace-pre-line">
+                          {`Límite ${cliente.limiteCredito === null ? "sin definir" : formatMoney(cliente.limiteCredito)}\nDisponible ${cliente.disponible === null ? "—" : formatMoney(cliente.disponible)}`}
+                        </Text>
                       ) : (
-                        <span className="text-xs text-muted-foreground">No habilitada</span>
+                        <Text as="span" size="xs" tone="muted">No habilitada</Text>
                       )}
                     </TableCell>
                     <TableCell className={`tabular text-right font-semibold ${cliente.saldo > 0 ? "text-warning" : ""}`}>
@@ -152,6 +152,6 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
           </>
         )}
       </Card>
-    </div>
+    </Stack>
   );
 }

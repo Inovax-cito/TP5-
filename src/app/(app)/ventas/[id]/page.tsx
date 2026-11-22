@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PrintButton } from "@/components/common/print-button";
 import { EstadoFacturaBadge, FormaPagoBadge } from "@/components/common/status-badge";
+import { Grid, Inline, Stack, Text, Title } from "@/components/layout/primitives";
 import { AnularFacturaButton } from "@/components/ventas/anular-factura-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,75 +46,75 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
   const comercio = getDatosComercio();
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 no-print">
+    <Stack gap="6">
+      <Inline wrap align="center" justify="between" gap="3" className="no-print">
         <Button asChild variant="ghost" size="sm">
           <Link href="/ventas">
             <ArrowLeft className="h-4 w-4" /> Volver a ventas
           </Link>
         </Button>
-        <div className="flex flex-wrap gap-2">
+        <Inline wrap gap="2">
           <PrintButton label="Imprimir factura" />
           {factura.estado === "emitida" && user.rol === "admin" && (
             <AnularFacturaButton facturaId={factura.id} />
           )}
-        </div>
-      </div>
+        </Inline>
+      </Inline>
 
       {factura.estado === "anulada" && (
         <Card className="border-destructive/30 bg-destructive/5 p-5 no-print">
-          <p className="font-semibold text-destructive">Esta factura fue anulada</p>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <Text weight="semibold" tone="destructive">Esta factura fue anulada</Text>
+          <Text size="sm" tone="muted" className="mt-1">
             Motivo: {factura.anulacion?.motivo}. Stock y saldos ya fueron revertidos.
-          </p>
+          </Text>
         </Card>
       )}
 
       <Card className="print-full mx-auto max-w-4xl p-5 sm:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-6">
-          <div>
-            <p className="text-xs uppercase tracking-widest text-muted-foreground">Factura</p>
-            <h1 className="tabular mt-1 text-3xl font-bold">{factura.numeroFormateado}</h1>
-            <p className="mt-1 text-xs text-muted-foreground">{formatDateTimeArg(factura.fecha)}</p>
-          </div>
-          <div className="text-right">
-            <div className="flex justify-end gap-2">
+        <Inline wrap align="start" justify="between" gap="6">
+          <Stack>
+            <Text size="xs" caps="widest" tone="muted">Factura</Text>
+            <Title tabular className="mt-1">{factura.numeroFormateado}</Title>
+            <Text size="xs" tone="muted" className="mt-1">{formatDateTimeArg(factura.fecha)}</Text>
+          </Stack>
+          <Stack align="right">
+            <Inline justify="end" gap="2">
               <EstadoFacturaBadge estado={factura.estado} />
               <FormaPagoBadge forma={pago.forma} />
-            </div>
-            <p className="mt-3 font-bold">{comercio.nombre}</p>
-            <p className="text-xs text-muted-foreground">Comprobante interno · Sin validez fiscal</p>
-            {comercio.cuit && <p className="text-xs text-muted-foreground">CUIT {comercio.cuit}</p>}
-          </div>
-        </div>
+            </Inline>
+            <Text weight="bold" className="mt-3">{comercio.nombre}</Text>
+            <Text size="xs" tone="muted">Comprobante interno · Sin validez fiscal</Text>
+            {comercio.cuit && <Text size="xs" tone="muted">CUIT {comercio.cuit}</Text>}
+          </Stack>
+        </Inline>
 
         <Separator className="my-6" />
 
-        <div className="grid gap-6 sm:grid-cols-3">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Comprador</p>
-            <p className="font-semibold">{factura.cliente?.nombre ?? "Consumidor final"}</p>
-            <p className="text-xs text-muted-foreground">
+        <Grid gap="6" cols={{ sm: 3 }}>
+          <Stack>
+            <Text size="xs" caps="wide" tone="muted">Comprador</Text>
+            <Text weight="semibold">{factura.cliente?.nombre ?? "Consumidor final"}</Text>
+            <Text size="xs" tone="muted">
               {factura.cliente ? `${factura.cliente.tipoDoc} ${factura.cliente.nroDoc}` : "Sin documento"}
-            </p>
+            </Text>
             {factura.cliente?.domicilio && (
-              <p className="text-xs text-muted-foreground">{String(factura.cliente.domicilio)}</p>
+              <Text size="xs" tone="muted">{String(factura.cliente.domicilio)}</Text>
             )}
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Vendedor</p>
-            <p className="font-semibold">{factura.vendedor.nombre}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Forma de pago</p>
-            <p className="font-semibold">{formas[pago.forma] ?? pago.forma}</p>
+          </Stack>
+          <Stack>
+            <Text size="xs" caps="wide" tone="muted">Vendedor</Text>
+            <Text weight="semibold">{factura.vendedor.nombre}</Text>
+          </Stack>
+          <Stack>
+            <Text size="xs" caps="wide" tone="muted">Forma de pago</Text>
+            <Text weight="semibold">{formas[pago.forma] ?? pago.forma}</Text>
             {pago.tarjeta && (
-              <p className="text-xs text-muted-foreground">
+              <Text size="xs" tone="muted">
                 {pago.tarjeta.marca} {pago.tarjeta.tipo} ···· {pago.tarjeta.ultimos4}
-              </p>
+              </Text>
             )}
-          </div>
-        </div>
+          </Stack>
+        </Grid>
 
         <Separator className="my-6" />
 
@@ -140,40 +141,40 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
           </TableBody>
         </Table>
 
-        <div className="mt-6 flex justify-end">
-          <div className="w-full max-w-xs space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Total</span>
-              <span className="tabular text-2xl font-bold">{formatMoney(factura.total)}</span>
-            </div>
+        <Inline justify="end" className="mt-6">
+          <Stack gap="2" className="w-full max-w-xs">
+            <Inline justify="between" className="text-sm">
+              <Text as="span" tone="muted">Total</Text>
+              <Text as="span" size="2xl" weight="bold" tabular>{formatMoney(factura.total)}</Text>
+            </Inline>
             {pago.forma === "contado" && pago.montoRecibido !== undefined && (
               <>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Recibido</span>
-                  <span className="tabular">{formatMoney(pago.montoRecibido)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Vuelto</span>
-                  <span className="tabular">{formatMoney(pago.vuelto ?? 0)}</span>
-                </div>
+                <Inline justify="between" className="text-sm">
+                  <Text as="span" tone="muted">Recibido</Text>
+                  <Text as="span" tabular>{formatMoney(pago.montoRecibido)}</Text>
+                </Inline>
+                <Inline justify="between" className="text-sm">
+                  <Text as="span" tone="muted">Vuelto</Text>
+                  <Text as="span" tabular>{formatMoney(pago.vuelto ?? 0)}</Text>
+                </Inline>
               </>
             )}
             {"saldoCliente" in factura && (
-              <div className="flex justify-between border-t pt-2 text-sm">
-                <span className="text-muted-foreground">Saldo del cliente</span>
-                <span className="tabular font-semibold">{formatMoney(Number(factura.saldoCliente))}</span>
-              </div>
+              <Inline justify="between" className="border-t pt-2 text-sm">
+                <Text as="span" tone="muted">Saldo del cliente</Text>
+                <Text as="span" weight="semibold" tabular>{formatMoney(Number(factura.saldoCliente))}</Text>
+              </Inline>
             )}
-          </div>
-        </div>
+          </Stack>
+        </Inline>
 
-        <div className="mt-12 space-y-1 border-t pt-6 text-center text-xs text-muted-foreground">
-          <p className="font-semibold">{comercio.nombre}</p>
-          {comercio.direccion && <p>{comercio.direccion}</p>}
-          {comercio.telefono && <p>Tel. {comercio.telefono}</p>}
-          <p>Generado por el Sistema de Gestión Comercial</p>
-        </div>
+        <Stack gap="1" align="center" className="mt-12 border-t pt-6 text-xs text-muted-foreground">
+          <Text weight="semibold">{comercio.nombre}</Text>
+          {comercio.direccion && <Text>{comercio.direccion}</Text>}
+          {comercio.telefono && <Text>Tel. {comercio.telefono}</Text>}
+          <Text>Generado por el Sistema de Gestión Comercial</Text>
+        </Stack>
       </Card>
-    </div>
+    </Stack>
   );
 }

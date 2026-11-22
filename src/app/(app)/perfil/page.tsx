@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PasswordForm } from "@/components/perfil/password-form";
 import { PageHeader } from "@/components/common/page-header";
+import { Grid, Stack, Text } from "@/components/layout/primitives";
 import { getCurrentUser } from "@/lib/auth/current-user";
 
 export default async function PerfilPage() {
@@ -10,7 +11,7 @@ export default async function PerfilPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <PageHeader title="Mi perfil" description="Datos de la cuenta y seguridad." />
 
       <Card className="max-w-2xl">
@@ -18,32 +19,32 @@ export default async function PerfilPage() {
           <CardTitle>Datos personales</CardTitle>
         </CardHeader>
         <CardContent>
-          <dl className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <dt className="text-xs text-muted-foreground">Nombre</dt>
-              <dd className="font-medium">{user.nombre}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">Email</dt>
-              <dd className="font-medium">{user.email}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">Rol</dt>
-              <dd>
+          <Grid as="dl" gap="4" cols={{ sm: 2 }}>
+            <Stack>
+              <Text as="dt" size="xs" tone="muted">Nombre</Text>
+              <Text as="dd" weight="medium">{user.nombre}</Text>
+            </Stack>
+            <Stack>
+              <Text as="dt" size="xs" tone="muted">Email</Text>
+              <Text as="dd" weight="medium">{user.email}</Text>
+            </Stack>
+            <Stack>
+              <Text as="dt" size="xs" tone="muted">Rol</Text>
+              <Text as="dd">
                 <Badge variant={user.rol === "admin" ? "default" : "secondary"}>
                   {user.rol === "admin" ? "Administrador" : "Vendedor"}
                 </Badge>
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">Estado</dt>
-              <dd className="font-medium">{user.activo ? "Activo" : "Inactivo"}</dd>
-            </div>
-          </dl>
+              </Text>
+            </Stack>
+            <Stack>
+              <Text as="dt" size="xs" tone="muted">Estado</Text>
+              <Text as="dd" weight="medium">{user.activo ? "Activo" : "Inactivo"}</Text>
+            </Stack>
+          </Grid>
         </CardContent>
       </Card>
 
       <PasswordForm />
-    </div>
+    </Stack>
   );
 }

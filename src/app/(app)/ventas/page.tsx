@@ -15,7 +15,8 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { formatDate, formatMoney } from "@/lib/format";
 import * as clientesService from "@/lib/services/clientes.service";
 import * as facturasService from "@/lib/services/facturas.service";
-import * as usuariosService from "@/lib/services/usuarios.service";
+import * as usuariosService from "@/lib/services/usuarios.service";
+import { Stack, Text } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
 const valor = (params: Search, clave: string) => {
@@ -98,7 +99,7 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
   ];
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <PageHeader
         title="Ventas"
         description="Facturas emitidas. Totales y saldos se actualizan al confirmar o anular."
@@ -112,11 +113,11 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
       />
 
       <Card className="flex items-center justify-between border-primary/20 bg-primary/5 p-5">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Total emitido</p>
-          <p className="tabular text-2xl font-bold text-primaryText">{formatMoney(facturas.totalEmitido)}</p>
-        </div>
-        <p className="text-sm text-muted-foreground">{facturas.total} facturas en el filtro</p>
+        <Stack>
+          <Text size="xs" weight="semibold" caps="wide" tone="muted">Total emitido</Text>
+          <Text size="2xl" weight="bold" tone="primary" tabular>{formatMoney(facturas.totalEmitido)}</Text>
+        </Stack>
+        <Text size="sm" tone="muted">{facturas.total} facturas en el filtro</Text>
       </Card>
 
       <Suspense fallback={<Skeleton className="h-28 w-full" />}>
@@ -177,6 +178,6 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
           </>
         )}
       </Card>
-    </div>
+    </Stack>
   );
 }

@@ -5,7 +5,8 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { formatMoney } from "@/lib/format";
 import * as clientesService from "@/lib/services/clientes.service";
 import * as facturasService from "@/lib/services/facturas.service";
-import * as productosService from "@/lib/services/productos.service";
+import * as productosService from "@/lib/services/productos.service";
+import { Stack } from "@/components/layout/primitives";
 
 export default async function NuevaVentaPage() {
   const user = await getCurrentUser();
@@ -18,7 +19,7 @@ export default async function NuevaVentaPage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <Stack gap="6">
       <PageHeader
         title="Nueva venta"
         description="Armá la factura, elegí el comprador y registrá el pago. El stock se descuenta al confirmar."
@@ -44,6 +45,6 @@ export default async function NuevaVentaPage() {
         }))}
         proximoNumero={`Próxima: ${numero.numeroFormateado}`}
       />
-    </div>
+    </Stack>
   );
 }
