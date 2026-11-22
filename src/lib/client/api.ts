@@ -42,17 +42,22 @@ export async function apiFetch<T>(url: string, init?: RequestInit): Promise<T> {
   return json as T;
 }
 
-/** Convierte losdetails de Zod o del servicio en errores por campo. */
-export function mapApiErrors(error: unknown): {
-  errores: Record<string, string>;
-  mensaje: string | null;
-} {
-  if (error instanceof ApiClientError) {
-    const errores: Record<string, string> = {};
-    for (const detail of error.details) {
-      if (detail.campo && detail.mensaje) errores[detail.campo] = detail.mensaje;
-    }
-    return { errores, mensaje: Object.keys(errores).length ? null : error.message };
+type ErroresMapeados = { errores: Record<string, string>; mensaje: string | null };
+
+/**
+ * Convierte el cuerpo de error de la sección 11.1 (de la API o de una Server Action)
+ * en errores por campo; si no hay ninguno, deja el mensaje general.
+ */
+export function mapErrorPayload(error: { message: string; details?: ErrorDetalle[] }): ErroresMapeados {
+  const errores: Record<string, string> = {};
+  for (const detail of error.details ?? []) {
+    if (detail.campo && detail.mensaje) errores[detail.campo] = detail.mensaje;
   }
+  return { errores, mensaje: Object.keys(errores).length ? null : error.message };
+}
+
+/** Convierte los details de Zod o del servicio en errores por campo. */
+export function mapApiErrors(error: unknown): ErroresMapeados {
+  if (error instanceof ApiClientError) return mapErrorPayload(error);
   return { errores: {}, mensaje: error instanceof Error ? error.message : "Error inesperado." };
 }

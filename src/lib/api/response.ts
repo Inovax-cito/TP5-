@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ApiError } from "@/lib/errors";
+import { aErrorPublico } from "@/lib/errors";
 
 export function ok<T>(data: T, status = 200) {
   return NextResponse.json(data, { status });
@@ -37,22 +37,6 @@ export function fromPaginated<T>(result: {
 
 /** Sección 11.1: un único formato de error para toda la API. */
 export function errorResponse(error: unknown) {
-  if (error instanceof ApiError) {
-    return NextResponse.json(
-      {
-        error: {
-          code: error.code,
-          message: error.message,
-          ...(error.details?.length ? { details: error.details } : {}),
-        },
-      },
-      { status: error.status },
-    );
-  }
-
-  console.error("[ERROR_INTERNO]", error);
-  return NextResponse.json(
-    { error: { code: "ERROR_INTERNO", message: "Ocurrió un error inesperado." } },
-    { status: 500 },
-  );
+  const { status, error: cuerpo } = aErrorPublico(error);
+  return NextResponse.json({ error: cuerpo }, { status });
 }

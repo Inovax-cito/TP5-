@@ -43,6 +43,34 @@ export class ApiError extends Error {
   }
 }
 
+/** Cuerpo público de un error (sección 11.1), igual para rutas y Server Actions. */
+export type ErrorPublico = {
+  code: ApiErrorCode;
+  message: string;
+  details?: ErrorDetail[];
+};
+
+/**
+ * Sección 10.3 y 11.1: traduce cualquier error al formato público. Lo usan los dos
+ * adaptadores (Route Handlers y Server Actions) para no repetir la conversión.
+ * Un error inesperado se loguea en el servidor y sale como 500 ERROR_INTERNO sin detalle.
+ */
+export function aErrorPublico(error: unknown): { status: number; error: ErrorPublico } {
+  if (error instanceof ApiError) {
+    return {
+      status: error.status,
+      error: {
+        code: error.code,
+        message: error.message,
+        ...(error.details?.length ? { details: error.details } : {}),
+      },
+    };
+  }
+
+  console.error("[ERROR_INTERNO]", error);
+  return { status: 500, error: { code: "ERROR_INTERNO", message: "Ocurrió un error inesperado." } };
+}
+
 /** Fábricas de errores para no repetir códigos ni mensajes en los servicios. */
 export const err = {
   noAutenticado: () => new ApiError(401, "NO_AUTENTICADO", "Iniciá sesión para continuar."),

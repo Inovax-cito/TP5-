@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,7 @@ import {
 import { Field } from "@/components/common/field";
 import { Input } from "@/components/ui/input";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { actualizarCategoria, crearCategoria } from "@/lib/actions/categorias";
 import { crearCategoriaSchema } from "@/lib/validations/categorias";
 
 type Categoria = { id: number; nombre: string; activa: boolean };
@@ -28,9 +28,8 @@ export function CategoriaForm({
   onOpenChange: (open: boolean) => void;
   categoria?: Categoria | null;
 }) {
-  const router = useRouter();
   const [nombre, setNombre] = useState("");
-  const { ejecutar, errores, errorGeneral, cargando, limpiar } = useApiMutation(
+  const { ejecutarAccion, errores, errorGeneral, cargando, limpiar } = useApiMutation(
     crearCategoriaSchema,
     categoria ? "Categoría actualizada." : "Categoría creada.",
   );
@@ -42,17 +41,14 @@ export function CategoriaForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, categoria]);
 
+  // Sección 10.3: la mutación va por Server Action; el servicio es el mismo que usa la API.
+  // La acción ya refresca la página en la misma respuesta, sin router.refresh().
   async function guardar(e: React.FormEvent) {
     e.preventDefault();
-    const data = await ejecutar(
-      { nombre },
-      categoria ? `/api/categorias/${categoria.id}` : "/api/categorias",
-      categoria ? "PATCH" : "POST",
+    const data = await ejecutarAccion({ nombre }, (datos) =>
+      categoria ? actualizarCategoria(categoria.id, datos) : crearCategoria(datos),
     );
-    if (data) {
-      onOpenChange(false);
-      router.refresh();
-    }
+    if (data) onOpenChange(false);
   }
 
   return (

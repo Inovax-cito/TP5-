@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { MoneyInput } from "@/components/common/money-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { actualizarCliente, crearCliente } from "@/lib/actions/clientes";
 import { crearClienteSchema } from "@/lib/validations/clientes";
 
 type Cliente = {
@@ -55,10 +55,9 @@ export function ClienteForm({
   cliente?: Cliente | null;
   alCrear?: (cliente: Cliente) => void;
 }) {
-  const router = useRouter();
   const esEdicion = Boolean(cliente);
   const [form, setForm] = useState(inicial);
-  const { ejecutar, errores, errorGeneral, cargando, limpiar } = useApiMutation(
+  const { ejecutarAccion, errores, errorGeneral, cargando, limpiar } = useApiMutation(
     crearClienteSchema,
     esEdicion ? "Cliente actualizado." : "Cliente creado.",
   );
@@ -83,22 +82,21 @@ export function ClienteForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, cliente]);
 
+  // Sección 10.3: la mutación va por Server Action; el servicio es el mismo que usa la API.
+  // También cubre el alta rápida desde la nueva venta (RF-V2): la confirmación de la venta
+  // y la búsqueda en vivo siguen usando la API REST.
   async function guardar(e: React.FormEvent) {
     e.preventDefault();
     const valores = {
       ...form,
       limiteCredito: form.cuentaCorriente && form.limiteCredito > 0 ? form.limiteCredito : null,
     };
-    const data = await ejecutar<Cliente>(
+    const data = await ejecutarAccion<Cliente>(
       valores,
-      esEdicion ? `/api/clientes/${cliente!.id}` : "/api/clientes",
-      esEdicion ? "PATCH" : "POST",
+      (datos) => (cliente ? actualizarCliente(cliente.id, datos) : crearCliente(datos)),
       { alTerminar: alCrear },
     );
-    if (data) {
-      onOpenChange(false);
-      router.refresh();
-    }
+    if (data) onOpenChange(false);
   }
 
   return (
