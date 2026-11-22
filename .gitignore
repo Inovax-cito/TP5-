@@ -24,3 +24,6 @@ docs/
 
 # vercel
 .vercel
+
+# guía personal de prompts (solo local)
+PROMPTS.md
