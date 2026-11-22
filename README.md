@@ -17,7 +17,7 @@ Aplicación full stack para un comercio minorista: factura ventas, controla exis
 > Cada integrante puede explicar y modificar cualquier parte del código (defensa individual).
 
 - **URL pública:** `https://ferreteria-elmartillo-parcial2.vercel.app` (pendiente de verificación; no llevar `www.`).
-- **Repositorio GitHub:** `https://github.com/<usuario>/<repo>` (pendiente: crear el repo y configurar el remote).
+- **Repositorio GitHub:** [https://github.com/Inovax-cito/TP5-](https://github.com/Inovax-cito/TP5-)
 
 El despliegue real a Vercel/Turso **no se ejecutó**; la sección [Despliegue](#despliegue-vercel--turso) describe los pasos y las variables necesarias. Para ensayar la defensa, ver [DEFENSA.md](./DEFENSA.md).
 
