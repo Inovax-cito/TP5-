@@ -64,6 +64,7 @@ Cada producto tiene una miniatura SVG en `public/productos/<codigo>.svg` (`pnpm 
 | `pnpm run db:seed` | Cargar datos de prueba (verifica que la base esté vacía) |
 | `pnpm run db:reset` | Borrar los datos de prueba y volver a generarlos desde cero |
 | `pnpm run db:verify` | Comprobar invariantes: existencia = Σ movimientos, sin stock negativo, saldo por cliente y facturas cuadradas |
+| `pnpm run test:e2e` | Prueba de punta a punta contra la API en `http://localhost:3000` (requiere `pnpm run dev` levantado) |
 | `pnpm run db:studio` | Explorar la base con Drizzle Studio |
 
 ---
@@ -291,5 +292,26 @@ pnpm run db:verify
 ```
 
 `db:verify` imprime los productos y clientes revisados, confirma que ninguno tiene stock negativo ni saldo a favor, verifica que cada factura cuadre con sus renglones y termina con `OK: las reglas 1, 2, 7 y 8 se cumplen.`
+
+### Prueba de punta a punta (lista de control 10.8)
+
+Con el servidor de desarrollo levantado en otra terminal:
+
+```bash
+pnpm run dev          # terminal 1
+pnpm run test:e2e     # terminal 2
+pnpm run db:verify    # después de la prueba
+```
+
+`scripts/e2e.mjs` recorre la API con el admin y el vendedor del seed: sesión y cookie, permisos por rol, productos y stock, ventas (efectivo, tarjeta, cuenta corriente), pagos, anulación, usuarios, tablero y que las páginas rendericen. Crea sus propios datos con un sufijo único, así que se puede correr varias veces sin reiniciar la base. Termina con `RESULTADO: N OK, 0 fallas`; si algo falla, lista las fallas y sale con código 1.
+
+Junto con `db:verify`, cubre los puntos 2, 3, 4 y 5 de la lista de control de la sección 10.8:
+
+| Punto 10.8 | Cómo se comprueba |
+| --- | --- |
+| 2. Un vendedor que llama directo a una ruta de admin recibe `403` | Sección 2 de la prueba: seis rutas de admin llamadas con la cookie del vendedor → `403 SIN_PERMISO`. |
+| 3. Una operación compuesta que falla a mitad de camino no deja datos parciales | Ventas rechazadas por stock, límite de crédito, monto insuficiente o datos inválidos no descuentan stock ni dejan débitos (los saldos y existencias esperados se comprueban después de cada paso), y `db:verify` confirma luego que no quedaron movimientos ni facturas sueltas. |
+| 4. Dos ventas simultáneas de la última unidad terminan con una sola factura | Sección 7: cinco ventas en paralelo de un producto con existencia 1 → exactamente un `201`, el resto `409 STOCK_INSUFICIENTE`, existencia final 0. |
+| 5. Existencia = suma de movimientos y saldo = débitos − créditos | `db:verify` sobre la base que quedó después de la prueba. |
 
 Recorrido sugerido para la defensa en vivo: venta a consumidor final en efectivo → venta a cliente nuevo en cuenta corriente → pago del cliente → anulación de una factura, verificando stock y saldo después de cada paso desde la ficha del producto y la cuenta corriente.

@@ -46,6 +46,21 @@ Si sobra tiempo, mostrar una venta con tarjeta (solo últimos 4 dígitos) y una 
 
 ---
 
+## Lista de control 10.8: prueba automática
+
+`pnpm run test:e2e` (con `pnpm run dev` levantado) seguido de `pnpm run db:verify` cubre los puntos **2, 3, 4 y 5** de la lista de control de la sección 10.8. Las dos tienen que terminar sin fallas: `RESULTADO: N OK, 0 fallas` y `OK: las reglas 1, 2, 7 y 8 se cumplen.`
+
+| Punto | Dónde mirar en `scripts/e2e.mjs` | Qué responder si preguntan |
+| --- | --- | --- |
+| 2. Vendedor → ruta de admin = `403` | Sección *2. Permisos por rol* | El permiso lo decide el servicio (`requireAdmin`), no el botón oculto: la API responde `403 SIN_PERMISO` aunque se la llame directo. |
+| 3. Operación compuesta que falla no deja datos parciales | Ventas rechazadas de las secciones 4 y 5 + `db:verify` | `emitir` corre todo en una transacción: si `moverStock` o una regla (límite, monto) falla, se revierte la factura, los renglones y los movimientos. |
+| 4. Dos ventas simultáneas de la última unidad | Sección *7. Concurrencia* | `moverStock` (`src/lib/services/stock.service.ts`) hace un `UPDATE` condicionado a `existencia >= -cantidad`; si no modifica filas lanza `409 STOCK_INSUFICIENTE`, así que solo una venta confirma. |
+| 5. Existencia = Σ movimientos; saldo = débitos − créditos | `src/scripts/verify.ts` | La existencia solo cambia por `moverStock` y el saldo se deriva de `movimientos_cuenta` (`getSaldo`), nunca se guarda a mano. |
+
+Los puntos 1, 6 y 7 se defienden mostrando el código (adaptadores que llaman a un solo servicio, esquemas Zod compartidos y dónde vive cada regla).
+
+---
+
 ## 3. Cambios chicos para practicar
 
 Hacerlos en la máquina propia, correr `pnpm run typecheck` y mostrar el resultado en la app.
@@ -63,6 +78,7 @@ Hacerlos en la máquina propia, correr `pnpm run typecheck` y mostrar el resulta
 - [ ] `pnpm install`, `cp .env.example .env`, `pnpm run db:migrate`, `pnpm run db:seed`, `pnpm run dev` funcionan desde cero con `dev.db` borrado.
 - [ ] `pnpm run typecheck` y `pnpm run build` pasan.
 - [ ] `pnpm run db:verify` termina con `OK: las reglas 1, 2, 7 y 8 se cumplen.`
+- [ ] Con `pnpm run dev` levantado, `pnpm run test:e2e` termina con `0 fallas` y `pnpm run db:verify` sigue en `OK` (puntos 2, 3, 4 y 5 de 10.8).
 - [ ] La URL pública abre, con datos cargados en Turso.
 - [ ] README con integrantes, legajos, repo y URL pública ya reemplazados.
 - [ ] Cada integrante sabe explicar `moverStock`, `emitir`, `getSaldo`, `withApi` y `requireAdmin` sin mirar apuntes.

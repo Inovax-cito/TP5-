@@ -14,6 +14,7 @@
     "db:reset": "tsx src/scripts/seed.ts --reset",
     "img:generate": "tsx src/scripts/generar-imagenes.ts",
     "db:verify": "tsx src/scripts/verify.ts",
+    "test:e2e": "node scripts/e2e.mjs http://localhost:3000",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
