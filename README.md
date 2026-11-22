@@ -31,7 +31,6 @@ Requiere **Node.js 20+** y **pnpm 10** (`corepack enable` o instalar con `npm i 
 pnpm install
 cp .env.example .env
 pnpm run db:migrate
-pnpm run img:generate
 pnpm run db:seed
 pnpm run dev
 ```
@@ -63,7 +62,8 @@ Cada producto tiene una miniatura SVG en `public/productos/<codigo>.svg` (`pnpm 
 | `pnpm run db:generate` | Generar una migración nueva con drizzle-kit |
 | `pnpm run db:migrate` | Aplicar migraciones a la base configurada en `DATABASE_URL` |
 | `pnpm run db:seed` | Cargar datos de prueba (verifica que la base esté vacía) |
-| `pnpm run db:verify` | Comprobar invariantes: existencia = Σ movimientos, sin stock negativo y saldo total |
+| `pnpm run db:reset` | Borrar los datos de prueba y volver a generarlos desde cero |
+| `pnpm run db:verify` | Comprobar invariantes: existencia = Σ movimientos, sin stock negativo, saldo por cliente y facturas cuadradas |
 | `pnpm run db:studio` | Explorar la base con Drizzle Studio |
 
 ---
@@ -103,7 +103,7 @@ Todas las pantallas comparten el layout con panel lateral y barra superior; el p
 
 ### Cobertura de requerimientos funcionales
 
-- **Ventas (RF-V1–V9):** pantalla única de comprador / ítems / pago; consumidor final por defecto; alta rápida de cliente sin perder la venta; búsqueda de productos con agregado por Enter; existencia visible y bloqueo al superarla; contado con vuelto, tarjeta (solo últimos 4 dígitos) y cuenta corriente con límite; emisión atómica con precio congelado; comprobante imprimible; filtros y paginado; anulación administrativa con motivo que revierte stock y saldo.
+- **Ventas (RF-V1–V9):** pantalla única de comprador / ítems / pago, operable con teclado (Enter agrega, Ctrl+Enter confirma); consumidor final por defecto; alta rápida de cliente sin perder la venta; búsqueda de productos con agregado por Enter; existencia visible y bloqueo al superarla; contado con vuelto, tarjeta (solo últimos 4 dígitos) y cuenta corriente con límite; emisión atómica con precio congelado; comprobante imprimible con datos del comercio y del comprador; filtros (incluye vendedor y búsqueda por número `0001-00000001`) y paginado validados con Zod; anulación administrativa con motivo que revierte stock y sólo el saldo pendiente, sin dejar saldo a favor.
 - **Productos (RF-P1–P7):** catálogo paginado con filtros y aviso de stock mínimo; alta y edición sin editar existencia a mano; baja lógica; ingresos y egresos con motivo; historial con existencia resultante, usuario y referencia a factura; categorías.
 - **Clientes (RF-C1–C7):** búsqueda por nombre o documento (ignorando puntos y guiones); alta y edición; ficha con saldo y últimas facturas; cuenta corriente con saldo acumulado; pagos con recibo numerado e imprimible; saldos ordenados; baja lógica.
 - **Usuarios y acceso (RF-U1–U5):** login con contraseña hasheada; cookie firmada httpOnly y SameSite=Lax; usuario resuelto contra la base en cada pedido; roles admin/vendedor; alta, edición, desactivación y restablecimiento de contraseña; cada usuario cambia la suya en `/perfil`.
@@ -223,7 +223,6 @@ Se ejecuta **una sola vez**, desde la máquina local, con las variables apuntand
 ```bash
 # bash / Git Bash
 DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run db:migrate
-DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run img:generate
 DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run db:seed
 DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run db:verify
 ```
@@ -238,7 +237,7 @@ pnpm run db:seed
 pnpm run db:verify
 ```
 
-`img:generate` solo regenera los SVG de `public/productos`; están commiteados, así que no hace falta ejecutarlo en Vercel. `db:seed` detecta que ya hay datos y solo completa imágenes faltantes: no duplica facturas.
+`img:generate` solo regenera los SVG de `public/productos`; están commiteados, así que no hace falta ejecutarlo en Vercel ni en la instalación. `db:seed` detecta que ya hay datos y solo completa imágenes faltantes: no duplica facturas. Si una carga anterior quedó a medias, correr `pnpm run db:reset` y luego `pnpm run db:seed`.
 
 ### 3. Proyecto en Vercel
 
@@ -259,7 +258,7 @@ pnpm run db:verify
 - `/login` con ambos usuarios de prueba.
 - `/`, `/productos`, `/productos/categorias` (miniaturas), `/ventas/nueva`.
 - Recorrido completo de la [demo de defensa](./DEFENSA.md): venta en efectivo → venta en cuenta corriente → pago → anulación, controlando stock y saldo en cada paso.
-- `pnpm run db:verify` contra Turso debe terminar con `OK: las reglas 1, 2 y 7 se cumplen.`
+- `pnpm run db:verify` contra Turso debe terminar con `OK: las reglas 1, 2, 7 y 8 se cumplen.`
 
 > La base local `dev.db` es solo desarrollo; no se incluye en el repositorio. El filesystem de Vercel es de solo lectura: por eso la base es remota en Turso y no se suben imágenes a disco.
 
@@ -291,6 +290,6 @@ pnpm run build
 pnpm run db:verify
 ```
 
-`db:verify` imprime los productos revisados, confirma que ninguno tiene stock negativo, muestra el saldo total y termina con `OK: las reglas 1, 2 y 7 se cumplen.`
+`db:verify` imprime los productos y clientes revisados, confirma que ninguno tiene stock negativo ni saldo a favor, verifica que cada factura cuadre con sus renglones y termina con `OK: las reglas 1, 2, 7 y 8 se cumplen.`
 
 Recorrido sugerido para la defensa en vivo: venta a consumidor final en efectivo → venta a cliente nuevo en cuenta corriente → pago del cliente → anulación de una factura, verificando stock y saldo después de cada paso desde la ficha del producto y la cuenta corriente.
