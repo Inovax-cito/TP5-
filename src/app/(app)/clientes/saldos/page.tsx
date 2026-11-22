@@ -9,7 +9,8 @@ import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { formatMoney } from "@/lib/format";
-import * as clientesService from "@/lib/services/clientes.service";
+import * as clientesService from "@/lib/services/clientes.service";
+
 import { Grid, Stack } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
@@ -45,7 +46,7 @@ export default async function SaldosPage({ searchParams }: { searchParams: Promi
       </Grid>
 
       <Card>
-        <Table>
+        <Table ocultar={{ sm: [1, 3, 5] }}>
           <TableHeader>
             <TableRow>
               <TableHead>#</TableHead>
@@ -67,7 +68,7 @@ export default async function SaldosPage({ searchParams }: { searchParams: Promi
                     {cliente.nombre}
                   </Link>
                 </TableCell>
-                <TableCell className="text-xs text-muted-foreground">
+                <TableCell className="tabular text-xs text-muted-foreground">
                   {cliente.tipoDoc} {cliente.nroDoc}
                 </TableCell>
                 <TableCell className="tabular text-right font-semibold text-warning">{formatMoney(cliente.saldo)}</TableCell>

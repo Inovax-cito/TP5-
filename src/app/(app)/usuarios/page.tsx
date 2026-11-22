@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { FilterBar } from "@/components/common/filter-bar";
 import { PaginationLinks } from "@/components/common/pagination-links";
 import { EmptyState } from "@/components/common/states";
-import { ActivoBadge } from "@/components/common/status-badge";
+import { ActivoBadge, RolBadge } from "@/components/common/status-badge";
 import { UsuarioActions } from "@/components/usuarios/usuario-actions";
 import { UsuarioCreateButton } from "@/components/usuarios/usuario-create-button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,8 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import * as usuariosService from "@/lib/services/usuarios.service";
+import * as usuariosService from "@/lib/services/usuarios.service";
+
 import { Stack } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
@@ -68,7 +69,7 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
           <EmptyState title="No se encontraron usuarios" description="Probá con otra búsqueda." />
         ) : (
           <>
-            <Table>
+            <Table ocultar={{ sm: [2, 4] }}>
               <TableHeader>
                 <TableRow>
                   <TableHead>Nombre</TableHead>
@@ -89,9 +90,7 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">{u.email}</TableCell>
                     <TableCell>
-                      <Badge variant={u.rol === "admin" ? "default" : "secondary"}>
-                        {u.rol === "admin" ? "Administrador" : "Vendedor"}
-                      </Badge>
+                      <RolBadge rol={u.rol} />
                     </TableCell>
                     <TableCell><ActivoBadge activo={u.activo} /></TableCell>
                     <TableCell>

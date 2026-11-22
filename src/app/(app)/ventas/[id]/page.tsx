@@ -5,6 +5,7 @@ import { PrintButton } from "@/components/common/print-button";
 import { EstadoFacturaBadge, FormaPagoBadge } from "@/components/common/status-badge";
 import { Grid, Inline, Stack, Text, Title } from "@/components/layout/primitives";
 import { AnularFacturaButton } from "@/components/ventas/anular-factura-button";
+import { BrandMark } from "@/components/layout/brand-mark";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -70,31 +71,36 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
         </Card>
       )}
 
-      <Card className="print-full mx-auto max-w-4xl p-5 sm:p-8">
+      <Stack className="print-sheet bg-paper-desk -mx-4 px-3 py-6 sm:mx-0 sm:rounded-card sm:px-8 sm:py-10">
+      <Card className="print-full relative mx-auto max-w-4xl overflow-hidden rounded-card p-6 shadow-elevation-3 sm:p-10">
+        <Stack className="print-keep absolute inset-x-0 top-0 h-1.5 bg-primary print:relative print:mb-6 print:h-1" />
         <Inline wrap align="start" justify="between" gap="6">
-          <Stack>
-            <Text size="xs" caps="widest" tone="muted">Factura</Text>
-            <Title tabular className="mt-1">{factura.numeroFormateado}</Title>
-            <Text size="xs" tone="muted" className="mt-1">{formatDateTimeArg(factura.fecha)}</Text>
-          </Stack>
+          <Inline align="start" gap="3">
+            <BrandMark size="lg" />
+            <Stack>
+              <Text weight="bold" size="lg">{comercio.nombre}</Text>
+              <Text size="xs" tone="muted">Comprobante interno · Sin validez fiscal</Text>
+              {comercio.cuit && <Text size="xs" tone="muted" tabular>CUIT {comercio.cuit}</Text>}
+            </Stack>
+          </Inline>
           <Stack align="right">
-            <Inline justify="end" gap="2">
+            <Text size="micro" caps="widest" tone="primary">Factura</Text>
+            <Title tabular size="2xl" className="mt-1 sm:text-[1.875rem]">{factura.numeroFormateado}</Title>
+            <Text size="xs" tone="muted" tabular className="mt-1">{formatDateTimeArg(factura.fecha)}</Text>
+            <Inline justify="end" gap="2" className="mt-3">
               <EstadoFacturaBadge estado={factura.estado} />
               <FormaPagoBadge forma={pago.forma} />
             </Inline>
-            <Text weight="bold" className="mt-3">{comercio.nombre}</Text>
-            <Text size="xs" tone="muted">Comprobante interno · Sin validez fiscal</Text>
-            {comercio.cuit && <Text size="xs" tone="muted">CUIT {comercio.cuit}</Text>}
           </Stack>
         </Inline>
 
         <Separator className="my-6" />
 
-        <Grid gap="6" cols={{ sm: 3 }}>
+        <Grid gap="6" cols={{ sm: 3 }} className="rounded-control border bg-muted/40 p-4 sm:p-5">
           <Stack>
             <Text size="xs" caps="wide" tone="muted">Comprador</Text>
             <Text weight="semibold">{factura.cliente?.nombre ?? "Consumidor final"}</Text>
-            <Text size="xs" tone="muted">
+            <Text size="xs" tone="muted" tabular={Boolean(factura.cliente)}>
               {factura.cliente ? `${factura.cliente.tipoDoc} ${factura.cliente.nroDoc}` : "Sin documento"}
             </Text>
             {factura.cliente?.domicilio && (
@@ -118,7 +124,7 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
 
         <Separator className="my-6" />
 
-        <Table>
+        <Table ocultar={{ sm: [1, 4] }}>
           <TableHeader>
             <TableRow>
               <TableHead>Código</TableHead>
@@ -131,7 +137,7 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
           <TableBody>
             {factura.items.map((item, indice) => (
               <TableRow key={`${item.productoId}-${indice}`}>
-                <TableCell className="font-mono text-xs">{item.codigo}</TableCell>
+                <TableCell className="tabular text-xs">{item.codigo}</TableCell>
                 <TableCell className="text-sm">{item.descripcion}</TableCell>
                 <TableCell className="tabular text-right">{item.cantidad}</TableCell>
                 <TableCell className="tabular text-right text-sm">{formatMoney(item.precioUnitario)}</TableCell>
@@ -142,9 +148,9 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
         </Table>
 
         <Inline justify="end" className="mt-6">
-          <Stack gap="2" className="w-full max-w-xs">
-            <Inline justify="between" className="text-sm">
-              <Text as="span" tone="muted">Total</Text>
+          <Stack gap="2" className="w-full max-w-sm rounded-control border bg-muted/40 p-4 sm:p-5">
+            <Inline justify="between" align="baseline" className="border-b pb-3 text-sm">
+              <Text as="span" weight="semibold">Total</Text>
               <Text as="span" size="2xl" weight="bold" tabular>{formatMoney(factura.total)}</Text>
             </Inline>
             {pago.forma === "contado" && pago.montoRecibido !== undefined && (
@@ -168,13 +174,14 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
           </Stack>
         </Inline>
 
-        <Stack gap="1" align="center" className="mt-12 border-t pt-6 text-xs text-muted-foreground">
+        <Stack gap="1" align="center" className="mt-12 border-t border-dashed pt-6 text-xs text-muted-foreground">
           <Text weight="semibold">{comercio.nombre}</Text>
           {comercio.direccion && <Text>{comercio.direccion}</Text>}
           {comercio.telefono && <Text>Tel. {comercio.telefono}</Text>}
           <Text>Generado por el Sistema de Gestión Comercial</Text>
         </Stack>
       </Card>
+      </Stack>
     </Stack>
   );
 }

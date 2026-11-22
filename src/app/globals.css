@@ -2,69 +2,327 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Sistema de diseño de Ferretería El Martillo.
+ * Todos los colores son tokens HSL (sin hsl()) para que Tailwind pueda aplicar opacidad.
+ * Identidad: naranja de marca para acciones y acentos, negro cálido y blanco.
+ */
 @layer base {
   :root {
-    --font-geist-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    /* Neutros cálidos 50–950 */
+    --neutral-50: 30 20% 98%;
+    --neutral-100: 30 16% 96%;
+    --neutral-200: 30 12% 91%;
+    --neutral-300: 30 9% 83%;
+    --neutral-400: 30 6% 64%;
+    --neutral-500: 30 5% 46%;
+    --neutral-600: 30 6% 36%;
+    --neutral-700: 30 8% 26%;
+    --neutral-800: 28 10% 16%;
+    --neutral-900: 24 12% 10%;
+    --neutral-950: 24 14% 6%;
 
-    /* Identidad: naranja #FF6A00, negro #111111 y blanco. */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
+    /* Superficies */
+    --background: 30 20% 97.5%;
+    --foreground: 24 14% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;
+    --card-foreground: 24 14% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
+    --popover-foreground: 24 14% 8%;
+    --muted: 30 16% 95%;
+    --muted-foreground: 30 6% 38%;
+    --secondary: 30 16% 94%;
+    --secondary-foreground: 24 14% 10%;
+    --accent: 25 100% 95.5%;
+    --accent-foreground: 22 90% 30%;
+    --border: 30 12% 89%;
+    --input: 30 10% 84%;
+
+    /* Marca: el naranja lleva texto oscuro (contraste AA); primary-text es el naranja para texto sobre blanco. */
     --primary: 25 100% 50%;
-    --primary-foreground: 0 0% 7%;
-    --primary-text: 24 100% 38%;
-    --secondary: 24 25% 95%;
-    --secondary-foreground: 0 0% 7%;
-    --muted: 24 25% 95%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 25 100% 94%;
-    --accent-foreground: 0 0% 7%;
-    --destructive: 0 72% 45%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 142 64% 30%;
-    --success-foreground: 0 0% 100%;
-    --warning: 32 95% 42%;
-    --warning-foreground: 0 0% 100%;
-    --border: 24 14% 86%;
-    --input: 24 14% 86%;
+    --primary-foreground: 24 14% 6%;
+    --primary-text: 22 92% 37%;
     --ring: 25 100% 50%;
-    --radius: 0.65rem;
+
+    /* Estados (texto blanco sobre el tono y tono sobre blanco: AA) */
+    --destructive: 0 72% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 152 62% 29%;
+    --success-foreground: 0 0% 100%;
+    --warning: 30 90% 33%;
+    --warning-foreground: 0 0% 100%;
+    --info: 214 78% 44%;
+    --info-foreground: 0 0% 100%;
+
+    /* Panel lateral */
+    --sidebar: 24 14% 7%;
+    --sidebar-foreground: 30 12% 92%;
+    --sidebar-muted: 30 6% 60%;
+    --sidebar-accent: 25 100% 50%;
+    --sidebar-accent-foreground: 24 14% 6%;
+    --sidebar-hover: 30 8% 12%;
+    --sidebar-border: 30 8% 15%;
+
+    /* Gráficos */
+    --chart-1: 25 100% 50%;
+    --chart-2: 24 14% 16%;
+    --chart-3: 38 96% 58%;
+    --chart-4: 30 7% 62%;
+    --chart-5: 18 75% 80%;
+    --chart-grid: 30 12% 92%;
+
+    /* Elevación: tres niveles de sombras suaves en capas, teñidas del negro cálido */
+    --shadow-1: 0 1px 2px hsl(24 30% 10% / 0.05), 0 1px 3px hsl(24 30% 10% / 0.04);
+    --shadow-2: 0 1px 2px hsl(24 30% 10% / 0.04), 0 4px 8px -2px hsl(24 30% 10% / 0.06),
+      0 12px 24px -8px hsl(24 30% 10% / 0.1);
+    --shadow-3: 0 2px 4px hsl(24 30% 10% / 0.04), 0 12px 24px -6px hsl(24 30% 10% / 0.1),
+      0 32px 64px -16px hsl(24 30% 10% / 0.2);
+
+    /* Radios: tarjetas, controles e insignias */
+    --radius-card: 0.875rem;
+    --radius-control: 0.5rem;
+    --radius-badge: 9999px;
+    --radius: var(--radius-control);
   }
 
   * {
     @apply border-border;
   }
 
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: var(--font-geist-sans);
+    @apply bg-background font-sans text-body text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* Foco visible y prolijo también en elementos sin estilos propios (enlaces de texto). */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.28);
+    color: hsl(var(--foreground));
+  }
+
+  /* Scrollbars finas */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--neutral-300)) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--neutral-300));
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--neutral-400));
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    opacity: 0.4;
+  }
+}
+
+/*
+ * Modo oscuro. Va dentro de @media screen: la impresión del comprobante y del recibo
+ * siempre usa los tokens claros, aunque la pantalla esté en oscuro.
+ */
+@media screen {
+  .dark {
+    color-scheme: dark;
+
+    /* Neutros invertidos: las clases neutral-* siguen significando "más o menos contraste". */
+    --neutral-50: 24 10% 7%;
+    --neutral-100: 24 8% 10%;
+    --neutral-200: 24 7% 15%;
+    --neutral-300: 24 6% 22%;
+    --neutral-400: 28 5% 34%;
+    --neutral-500: 30 5% 48%;
+    --neutral-600: 30 6% 62%;
+    --neutral-700: 30 8% 74%;
+    --neutral-800: 30 10% 85%;
+    --neutral-900: 30 14% 92%;
+    --neutral-950: 30 20% 97%;
+
+    --background: 24 10% 5.5%;
+    --foreground: 30 15% 93%;
+    --card: 24 9% 8.5%;
+    --card-foreground: 30 15% 93%;
+    --popover: 24 9% 10%;
+    --popover-foreground: 30 15% 93%;
+    --muted: 24 7% 13%;
+    --muted-foreground: 30 8% 64%;
+    --secondary: 24 7% 14%;
+    --secondary-foreground: 30 15% 93%;
+    --accent: 25 55% 13%;
+    --accent-foreground: 28 100% 72%;
+    --border: 24 7% 17%;
+    --input: 24 7% 22%;
+
+    --primary: 25 100% 53%;
+    --primary-foreground: 24 14% 6%;
+    --primary-text: 27 100% 64%;
+    --ring: 25 100% 56%;
+
+    /* En oscuro los tonos se aclaran y llevan texto oscuro encima (AA en ambos sentidos). */
+    --destructive: 0 80% 66%;
+    --destructive-foreground: 0 0% 8%;
+    --success: 150 55% 52%;
+    --success-foreground: 24 14% 6%;
+    --warning: 38 95% 60%;
+    --warning-foreground: 24 14% 6%;
+    --info: 213 90% 68%;
+    --info-foreground: 24 14% 6%;
+
+    --sidebar: 24 12% 4%;
+    --sidebar-foreground: 30 12% 92%;
+    --sidebar-muted: 30 6% 58%;
+    --sidebar-accent: 25 100% 55%;
+    --sidebar-accent-foreground: 24 14% 6%;
+    --sidebar-hover: 24 8% 9%;
+    --sidebar-border: 24 8% 12%;
+
+    --chart-1: 25 100% 56%;
+    --chart-2: 30 12% 80%;
+    --chart-3: 40 95% 62%;
+    --chart-4: 30 6% 46%;
+    --chart-5: 18 70% 70%;
+    --chart-grid: 24 7% 15%;
+
+    --shadow-1: 0 1px 2px hsl(0 0% 0% / 0.4), 0 0 0 1px hsl(0 0% 100% / 0.02);
+    --shadow-2: 0 2px 4px hsl(0 0% 0% / 0.35), 0 10px 24px -8px hsl(0 0% 0% / 0.55);
+    --shadow-3: 0 4px 8px hsl(0 0% 0% / 0.35), 0 24px 56px -12px hsl(0 0% 0% / 0.7);
   }
 }
 
 @layer utilities {
+  /* Importes, números de comprobante, códigos y documentos: mono con cifras tabulares. */
   .tabular {
+    font-family: var(--font-mono), ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum", "zero" 0;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
   }
   .scrollbar-thin {
     scrollbar-width: thin;
   }
+
+  /* Panel de marca del login: gradiente negro/naranja con patrón geométrico, solo CSS. */
+  .bg-brand-pattern {
+    background-color: hsl(var(--sidebar));
+    background-image:
+      radial-gradient(120% 80% at 100% 100%, hsl(var(--primary) / 0.55) 0%, transparent 55%),
+      radial-gradient(70% 60% at 0% 0%, hsl(var(--primary) / 0.14) 0%, transparent 60%),
+      linear-gradient(hsl(0 0% 100% / 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(0 0% 100% / 0.045) 1px, transparent 1px);
+    background-size: auto, auto, 32px 32px, 32px 32px;
+  }
+  .bg-brand-stripes {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      hsl(var(--primary)) 0 10px,
+      hsl(var(--sidebar)) 10px 20px
+    );
+  }
+
+  /* Hoja de comprobante en pantalla */
+  .bg-paper-desk {
+    background-image: radial-gradient(hsl(var(--neutral-300) / 0.5) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Impresión: comprobante y recibo en blanco y negro, limpios. Siempre en tema claro. */
 @media print {
+  @page {
+    margin: 14mm;
+  }
   .no-print {
     display: none !important;
   }
+  html,
+  body {
+    background: white !important;
+    color: black !important;
+    color-scheme: light !important;
+  }
   .print-full {
     width: 100% !important;
+    max-width: none !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: 0 !important;
-  }
-  body {
+    border-radius: 0 !important;
     background: white !important;
+    color: black !important;
+  }
+  .print-full *,
+  .print-sheet * {
+    color: black !important;
+    box-shadow: none !important;
+    border-color: #c8c8c8 !important;
+  }
+  .bg-background,
+  .bg-paper-desk {
+    background: white !important;
+  }
+  .print-full .text-muted-foreground {
+    color: #444 !important;
+  }
+  .print-full [class*="bg-"]:not(.print-keep) {
+    background: transparent !important;
+  }
+  .print-full .print-keep {
+    background: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-full [data-badge] {
+    border: 1px solid #666 !important;
+  }
+  .print-full [data-badge] [data-dot] {
+    background: black !important;
+  }
+  .print-sheet {
+    background: white !important;
+    padding: 0 !important;
+  }
+  main {
+    padding: 0 !important;
   }
 }

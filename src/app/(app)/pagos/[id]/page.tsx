@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PrintButton } from "@/components/common/print-button";
+import { BrandMark } from "@/components/layout/brand-mark";
 import { Grid, Inline, Stack, Text, Title } from "@/components/layout/primitives";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -44,29 +45,34 @@ export default async function ReciboPage({ params }: { params: Promise<{ id: str
         <PrintButton label="Imprimir recibo" />
       </Inline>
 
-      <Card className="print-full mx-auto max-w-2xl p-5 sm:p-8">
-        <Inline align="start" justify="between" gap="6">
-          <Stack>
-            <Text size="xs" caps="widest" tone="muted">Comprobante de pago</Text>
-            <Title className="mt-1">{recibo.numeroRecibo}</Title>
-          </Stack>
-          <Stack align="right" className="text-sm">
-            <Text weight="bold">Gestión Comercial</Text>
-            <Text tone="muted">Comprobante interno</Text>
-            <Text tone="muted">Sin validez fiscal</Text>
+      <Stack className="print-sheet bg-paper-desk -mx-4 px-3 py-6 sm:mx-0 sm:rounded-card sm:px-8 sm:py-10">
+      <Card className="print-full relative mx-auto max-w-2xl overflow-hidden rounded-card p-6 shadow-elevation-3 sm:p-10">
+        <Stack className="print-keep absolute inset-x-0 top-0 h-1.5 bg-primary print:relative print:mb-6 print:h-1" />
+        <Inline wrap align="start" justify="between" gap="6">
+          <Inline align="start" gap="3">
+            <BrandMark size="lg" />
+            <Stack className="text-sm">
+              <Text weight="bold">Gestión Comercial</Text>
+              <Text tone="muted">Comprobante interno</Text>
+              <Text tone="muted">Sin validez fiscal</Text>
+            </Stack>
+          </Inline>
+          <Stack align="right">
+            <Text size="micro" caps="widest" tone="primary">Comprobante de pago</Text>
+            <Title tabular size="2xl" className="mt-1">{recibo.numeroRecibo}</Title>
           </Stack>
         </Inline>
 
         <Separator className="my-6" />
 
-        <Grid gap="6" cols={{ sm: 2 }}>
+        <Grid gap="6" cols={{ sm: 2 }} className="rounded-control border bg-muted/40 p-4 sm:p-5">
           <Stack>
             <Text size="xs" caps="wide" tone="muted">Cliente</Text>
             <Text weight="semibold">{recibo.cliente.nombre}</Text>
           </Stack>
           <Stack>
             <Text size="xs" caps="wide" tone="muted">Fecha</Text>
-            <Text weight="semibold">{formatDateTimeArg(recibo.fecha)}</Text>
+            <Text weight="semibold" tabular>{formatDateTimeArg(recibo.fecha)}</Text>
           </Stack>
           <Stack>
             <Text size="xs" caps="wide" tone="muted">Medio de pago</Text>
@@ -80,7 +86,7 @@ export default async function ReciboPage({ params }: { params: Promise<{ id: str
 
         <Separator className="my-6" />
 
-        <Stack align="center" className="rounded-lg bg-muted p-6">
+        <Stack align="center" className="rounded-control border-2 border-dashed border-primary/30 bg-accent/50 p-6 sm:p-8">
           <Text size="xs" caps="wide" tone="muted">Importe abonado</Text>
           <Text size="3xl" weight="bold" tabular className="mt-1">{formatMoney(recibo.importe)}</Text>
         </Stack>
@@ -96,10 +102,11 @@ export default async function ReciboPage({ params }: { params: Promise<{ id: str
           <Text size="lg" tabular>{formatMoney(recibo.saldoCliente ?? 0)}</Text>
         </Stack>
 
-        <Text as="div" size="xs" tone="muted" align="center" className="mt-12 border-t pt-6">
+        <Text as="div" size="xs" tone="muted" align="center" className="mt-12 border-t border-dashed pt-6">
           Recibo generado por el sistema de gestión comercial
         </Text>
       </Card>
+      </Stack>
     </Stack>
   );
 }

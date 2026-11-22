@@ -15,7 +15,8 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { formatDate, formatMoney } from "@/lib/format";
 import * as clientesService from "@/lib/services/clientes.service";
 import * as facturasService from "@/lib/services/facturas.service";
-import * as usuariosService from "@/lib/services/usuarios.service";
+import * as usuariosService from "@/lib/services/usuarios.service";
+
 import { Stack, Text } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
@@ -137,7 +138,7 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
           />
         ) : (
           <>
-            <Table>
+            <Table ocultar={{ sm: [2, 6], lg: [4, 5] }}>
               <TableHeader>
                 <TableRow>
                   <TableHead>Número</TableHead>
@@ -153,7 +154,7 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
               <TableBody>
                 {facturas.data.map((factura) => (
                   <TableRow key={factura.id}>
-                    <TableCell className="font-mono text-xs font-medium">{factura.numeroFormateado}</TableCell>
+                    <TableCell className="tabular text-xs font-medium">{factura.numeroFormateado}</TableCell>
                     <TableCell className="whitespace-nowrap text-xs">{formatDate(factura.fecha)}</TableCell>
                     <TableCell className="text-sm">{factura.cliente?.nombre ?? "Consumidor final"}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{factura.vendedor.nombre}</TableCell>

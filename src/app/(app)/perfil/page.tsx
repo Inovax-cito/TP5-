@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
+import { RolBadge } from "@/components/common/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PasswordForm } from "@/components/perfil/password-form";
 import { PageHeader } from "@/components/common/page-header";
@@ -31,9 +31,7 @@ export default async function PerfilPage() {
             <Stack>
               <Text as="dt" size="xs" tone="muted">Rol</Text>
               <Text as="dd">
-                <Badge variant={user.rol === "admin" ? "default" : "secondary"}>
-                  {user.rol === "admin" ? "Administrador" : "Vendedor"}
-                </Badge>
+                <RolBadge rol={user.rol} />
               </Text>
             </Stack>
             <Stack>

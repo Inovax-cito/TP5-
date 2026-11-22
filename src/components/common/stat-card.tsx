@@ -1,6 +1,25 @@
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+const tonos = {
+  primary: {
+    borde: "before:bg-primary",
+    icono: "from-primary/25 to-primary/5 text-primaryText ring-primary/20",
+  },
+  success: {
+    borde: "before:bg-success",
+    icono: "from-success/20 to-success/5 text-success ring-success/20",
+  },
+  warning: {
+    borde: "before:bg-warning",
+    icono: "from-warning/20 to-warning/5 text-warning ring-warning/20",
+  },
+  muted: {
+    borde: "before:bg-neutral-300",
+    icono: "from-neutral-200 to-neutral-100/60 text-muted-foreground ring-neutral-300/60",
+  },
+};
+
+/** Indicador (el tamaño del número se ajusta al ancho de la tarjeta): número grande en mono, ícono con gradiente del tono y borde superior de acento. */
 export function StatCard({
   titulo,
   valor,
@@ -14,24 +33,30 @@ export function StatCard({
   icono: React.ComponentType<{ className?: string }>;
   tono?: "primary" | "success" | "warning" | "muted";
 }) {
-  const tonos = {
-    primary: "bg-primary/10 text-primaryText",
-    success: "bg-success/10 text-success",
-    warning: "bg-warning/10 text-warning",
-    muted: "bg-muted text-muted-foreground",
-  };
+  const t = tonos[tono];
   return (
-    <Card className="p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{titulo}</p>
-          <p className="tabular break-words text-xl font-bold tracking-tight sm:text-2xl">{valor}</p>
-          {detalle && <p className="text-xs text-muted-foreground">{detalle}</p>}
-        </div>
-        <div className={cn("rounded-lg p-2.5", tonos[tono])}>
-          <Icono className="h-5 w-5" />
-        </div>
+    <div
+      className={cn(
+        "group relative overflow-hidden rounded-card [container-type:inline-size] border border-border/80 bg-card p-5 shadow-elevation-1 transition hover:-translate-y-0.5 hover:shadow-elevation-2",
+        "before:absolute before:inset-x-0 before:top-0 before:h-[3px]",
+        t.borde,
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <span
+          className={cn(
+            "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-gradient-to-br ring-1 ring-inset transition group-hover:scale-105",
+            t.icono,
+          )}
+        >
+          <Icono className="h-[18px] w-[18px]" />
+        </span>
+        <p className="text-micro uppercase text-muted-foreground">{titulo}</p>
       </div>
-    </Card>
+      <p className="tabular mt-4 whitespace-nowrap text-[clamp(1rem,10.5cqi,1.75rem)] font-semibold leading-none tracking-tight text-foreground">
+        {valor}
+      </p>
+      {detalle && <p className="mt-2 text-xs text-muted-foreground">{detalle}</p>}
+    </div>
   );
 }
