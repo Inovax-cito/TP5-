@@ -1,0 +1,20 @@
+# dependencias
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# entorno
+.env
+.env*.local
+
+# SQLite local
+*.db
+*.db-journal
+
+# misc
+.DS_Store
+*.log
+*.tsbuildinfo
