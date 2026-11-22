@@ -16,10 +16,10 @@ Aplicación full stack para un comercio minorista: factura ventas, controla exis
 
 > Cada integrante puede explicar y modificar cualquier parte del código (defensa individual).
 
-- **URL pública:** `https://ferreteria-elmartillo-parcial2.vercel.app` (pendiente de verificación; no llevar `www.`).
+- **URL pública:** [https://tp-5-ivory.vercel.app](https://tp-5-ivory.vercel.app)
 - **Repositorio GitHub:** [https://github.com/Inovax-cito/TP5-](https://github.com/Inovax-cito/TP5-)
 
-El despliegue real a Vercel/Turso **no se ejecutó**; la sección [Despliegue](#despliegue-vercel--turso) describe los pasos y las variables necesarias. Para ensayar la defensa, ver [DEFENSA.md](./DEFENSA.md).
+La aplicación está desplegada en Vercel y usa una base de datos en Turso (ver [Base de datos en producción](#base-de-datos-en-producción)). La sección [Despliegue](#despliegue-vercel--turso) explica cómo se hizo y cómo repetirlo. Para ensayar la defensa, ver [DEFENSA.md](./DEFENSA.md).
 
 ---
 
@@ -204,9 +204,16 @@ curl -X POST http://localhost:3000/api/facturas \
 
 ---
 
+## Base de datos en producción
+
+- La app publicada usa la base **`gestion-comercial`** de [Turso](https://turso.tech), en la región `aws-sa-east-1` (São Paulo).
+- Las migraciones y los datos de prueba se cargaron una sola vez desde una máquina local, con `db:migrate` y `db:seed`. Después, `db:verify` contra Turso terminó con `OK: las reglas 1, 2, 7 y 8 se cumplen.`
+- La URL `libsql://…` y el token de acceso están solo en las *Environment Variables* de Vercel (`DATABASE_URL` y `DATABASE_AUTH_TOKEN`). No están en el repositorio.
+- `dev.db` es solo para desarrollo local y no se versiona.
+
 ## Despliegue (Vercel + Turso)
 
-La aplicación está preparada para desplegarse; **no se ejecutó el deploy real**. Seguir este orden:
+La aplicación está desplegada en [https://tp-5-ivory.vercel.app](https://tp-5-ivory.vercel.app). Estos son los pasos que se siguieron, en orden, por si hay que repetirlos:
 
 ### 1. Base de datos en Turso
 
@@ -252,7 +259,7 @@ pnpm run db:verify
    ```
 
 4. Hacer deploy. Vercel ejecuta `pnpm install` y `pnpm run build`. La app no necesita acceder a la base durante el build.
-5. Reemplazar la URL pública en el encabezado de este README y pegarla en el grupo por WhatsApp.
+5. En *Settings → Functions → Function Region* elegir **São Paulo (gru1)**, la misma región que la base de Turso, y volver a desplegar. Si las funciones corren en otra región, cada consulta a la base cruza el continente.
 
 ### 4. Verificación en línea
 
@@ -265,7 +272,7 @@ pnpm run db:verify
 
 ### 5. Dominio propio (opcional)
 
-La URL `https://<proyecto>.vercel.app` ya sirve para la entrega. Si además quieres un dominio propio:
+La URL `https://tp-5-ivory.vercel.app` ya sirve para la entrega. Si además quieres un dominio propio:
 
 1. **Comprar el dominio** en Vercel (*Domains → Buy a domain*) o en cualquier registrador (GoDaddy, Namecheap, etc.).
 2. Usar un nombre con guión, no con guion bajo: `www.ferreteria-elmartillo.com`. El guion bajo (`_`) no es válido en nombres de host y puede romper el certificado TLS.
