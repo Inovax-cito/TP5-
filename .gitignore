@@ -18,3 +18,9 @@ next-env.d.ts
 .DS_Store
 *.log
 *.tsbuildinfo
+
+# documentación de la cátedra (solo local)
+docs/
+
+# vercel
+.vercel
