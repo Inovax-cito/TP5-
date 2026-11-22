@@ -2,12 +2,22 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Wrench } from "lucide-react";
+import { ShieldCheck, ShoppingCart, Wrench } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field } from "@/components/common/field";
+
+/**
+ * Modo demo (pedido de la cátedra): entra con los usuarios del seed sin escribirlos.
+ * Usa el mismo POST /api/auth/login, así que la sesión y las reglas son las de siempre.
+ * Son las credenciales públicas del README; si se cambian en la base, el botón deja de funcionar.
+ */
+const DEMO = {
+  admin: { email: "laura@ferreteria.test", password: "admin1234" },
+  vendedor: { email: "pablo@ferreteria.test", password: "vendedor1234" },
+} as const;
 
 export function LoginForm() {
   const router = useRouter();
@@ -19,6 +29,16 @@ export function LoginForm() {
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
+    await ingresar(email, password);
+  }
+
+  async function entrarDemo(rol: keyof typeof DEMO) {
+    setEmail(DEMO[rol].email);
+    setPassword(DEMO[rol].password);
+    await ingresar(DEMO[rol].email, DEMO[rol].password);
+  }
+
+  async function ingresar(email: string, password: string) {
     setError(null);
     setCargando(true);
     try {
@@ -80,6 +100,21 @@ export function LoginForm() {
               {cargando ? "Ingresando…" : "Ingresar"}
             </Button>
           </form>
+          <div className="mt-6 space-y-3 border-t pt-4">
+            <p className="text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              O entrá en modo demo
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <Button type="button" variant="outline" disabled={cargando} onClick={() => entrarDemo("admin")}>
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                Administrador
+              </Button>
+              <Button type="button" variant="outline" disabled={cargando} onClick={() => entrarDemo("vendedor")}>
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Vendedor
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

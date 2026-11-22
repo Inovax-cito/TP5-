@@ -47,6 +47,8 @@ Abrir <http://localhost:3000>. La página `/login` es la única pública: todo l
 | Administrador | `laura@ferreteria.test` | `admin1234` |
 | Vendedor | `pablo@ferreteria.test` | `vendedor1234` |
 
+En la pantalla de login, los botones **Administrador** y **Vendedor** del modo demo entran con estos usuarios sin escribir nada.
+
 El seed crea además **5 categorías, 30 productos, 10 clientes, 50 facturas repartidas en los últimos 30 días** y varios pagos. Las facturas y los pagos se generan llamando a los **mismos servicios** que usa la aplicación, por lo que stock, saldos y numeración ya cumplen todas las reglas de negocio.
 
 Cada producto tiene una miniatura SVG en `public/productos/<codigo>.svg` (`pnpm run img:generate` las regenera) y el campo `imagen` de la tabla `productos` guarda su ruta o una URL `http(s)`. Se muestran en el catálogo, en la vista previa de cada categoría, en la ficha del producto y al buscar productos para una venta. Desde el formulario de producto se puede reemplazar la imagen por cualquier URL pública; si no carga, se muestra un ícono de respaldo.
