@@ -8,8 +8,18 @@ Aplicación full stack para un comercio minorista: factura ventas, controla exis
 
 ## Integrantes y URL pública
 
-- **Integrantes:** completar con los integrantes del grupo antes de la entrega.
-- **URL pública:** pendiente de publicación. El despliegue real a Vercel/Turso **no se ejecutó**; la sección [Despliegue](#despliegue-vercel--turso) describe los pasos y las variables necesarias.
+| Legajo | Integrante |
+| --- | --- |
+| `55555` | Nombre Apellido |
+| `55556` | Nombre Apellido |
+| `55557` | Nombre Apellido |
+
+> Reemplazar los legajos y nombres de ejemplo por los reales. Aviso por WhatsApp: *"El grupo N lo formamos 55555, 55556 y 55557"*.
+
+- **URL pública:** `https://<proyecto>.vercel.app` (pendiente de publicación).
+- **Repositorio GitHub:** `https://github.com/<usuario>/<repo>` (pendiente: crear el repo y configurar el remote).
+
+El despliegue real a Vercel/Turso **no se ejecutó**; la sección [Despliegue](#despliegue-vercel--turso) describe los pasos y las variables necesarias. Para ensayar la defensa, ver [DEFENSA.md](./DEFENSA.md).
 
 ---
 
@@ -195,20 +205,63 @@ curl -X POST http://localhost:3000/api/facturas \
 
 ## Despliegue (Vercel + Turso)
 
-La aplicación está preparada para desplegarse; **no se ejecutó el deploy real**.
+La aplicación está preparada para desplegarse; **no se ejecutó el deploy real**. Seguir este orden:
 
-1. Crear una base en [Turso](https://turso.tech/) y obtener `DATABASE_URL` (`libsql://...`) y `DATABASE_AUTH_TOKEN`.
-2. crear un proyecto en [Vercel](https://vercel.com/) apuntando a este repositorio (framework presets: Next.js, pnpm).
-3. Configurar en Vercel las variables de la tabla anterior, con `SESSION_SECRET` propio.
-4. Ejecutar las migraciones contra Turso antes del primer arranque:
+### 1. Base de datos en Turso
+
+```bash
+turso auth login
+turso db create gestion-comercial
+turso db show gestion-comercial --url        # → DATABASE_URL
+turso db tokens create gestion-comercial     # → DATABASE_AUTH_TOKEN
+```
+
+### 2. Migrar y cargar datos de prueba contra Turso
+
+Se ejecuta **una sola vez**, desde la máquina local, con las variables apuntando a Turso:
+
+```bash
+# bash / Git Bash
+DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run db:migrate
+DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run img:generate
+DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run db:seed
+DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run db:verify
+```
+
+En PowerShell:
+
+```powershell
+$env:DATABASE_URL = "libsql://<db>.turso.io"
+$env:DATABASE_AUTH_TOKEN = "<token>"
+pnpm run db:migrate
+pnpm run db:seed
+pnpm run db:verify
+```
+
+`img:generate` solo regenera los SVG de `public/productos`; están commiteados, así que no hace falta ejecutarlo en Vercel. `db:seed` detecta que ya hay datos y solo completa imágenes faltantes: no duplica facturas.
+
+### 3. Proyecto en Vercel
+
+1. Importar el repositorio en [Vercel](https://vercel.com/) con preset **Next.js** y package manager **pnpm**.
+2. Cargar las variables de la [tabla anterior](#variables-de-entorno) en *Environment Variables* (Production y Preview):
+   `DATABASE_URL`, `DATABASE_AUTH_TOKEN`, `SESSION_SECRET`, `NOMBRE_COMERCIO`, `DIRECCION_COMERCIO`, `TELEFONO_COMERCIO`, `CUIT_COMERCIO`.
+3. Generar un `SESSION_SECRET` propio (distinto del de `.env.example`):
+
    ```bash
-   DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run db:migrate
-   DATABASE_URL="libsql://<db>.turso.io" DATABASE_AUTH_TOKEN="<token>" pnpm run db:seed
+   node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
    ```
-   (También se puede usar un step de build o un script temporal con las mismas variables.)
-5. Verificar la URL pública con los usuarios de prueba y correr `pnpm run db:verify` apuntando a Turso.
 
-> La base local `dev.db` es solo desarrollo; no se incluye en el repositorio.
+4. Hacer deploy. Vercel ejecuta `pnpm install` y `pnpm run build`. La app no necesita acceder a la base durante el build.
+5. Reemplazar la URL pública en el encabezado de este README y pegarla en el grupo por WhatsApp.
+
+### 4. Verificación en línea
+
+- `/login` con ambos usuarios de prueba.
+- `/`, `/productos`, `/productos/categorias` (miniaturas), `/ventas/nueva`.
+- Recorrido completo de la [demo de defensa](./DEFENSA.md): venta en efectivo → venta en cuenta corriente → pago → anulación, controlando stock y saldo en cada paso.
+- `pnpm run db:verify` contra Turso debe terminar con `OK: las reglas 1, 2 y 7 se cumplen.`
+
+> La base local `dev.db` es solo desarrollo; no se incluye en el repositorio. El filesystem de Vercel es de solo lectura: por eso la base es remota en Turso y no se suben imágenes a disco.
 
 ---
 
