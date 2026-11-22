@@ -10,11 +10,11 @@ Aplicación full stack para un comercio minorista: factura ventas, controla exis
 
 | Legajo | Integrante |
 | --- | --- |
-| `55555` | Nombre Apellido |
-| `55556` | Nombre Apellido |
-| `55557` | Nombre Apellido |
+| `61087` | Pérez Joaquín |
+| `61175` | Risoo Aaron Ezequiel |
+| `55656` | Lombardo Ríos Benjamín |
 
-> Reemplazar los legajos y nombres de ejemplo por los reales. Aviso por WhatsApp: *"El grupo N lo formamos 55555, 55556 y 55557"*.
+> Cada integrante puede explicar y modificar cualquier parte del código (defensa individual).
 
 - **URL pública:** `https://ferreteria-elmartillo-parcial2.vercel.app` (pendiente de verificación; no llevar `www.`).
 - **Repositorio GitHub:** `https://github.com/<usuario>/<repo>` (pendiente: crear el repo y configurar el remote).
