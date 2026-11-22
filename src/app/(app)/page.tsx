@@ -4,7 +4,9 @@ import { ArrowUpRight, CircleAlert, CreditCard, ReceiptText, TrendingUp } from "
 import { DashboardCharts } from "@/components/dashboard/dashboard-charts";
 import { PageHeader } from "@/components/common/page-header";
 import { StatCard } from "@/components/common/stat-card";
-import { Grid, Stack, Text } from "@/components/layout/primitives";
+import { ProportionBar } from "@/components/common/proportion-bar";
+import { Grid, Inline, Stack, Text } from "@/components/layout/primitives";
+import { ProductImage } from "@/components/productos/product-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,14 +20,19 @@ export default async function InicioPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const [tablero, reposicion] = await Promise.all([
+  const [tablero, reposicion, catalogo] = await Promise.all([
     tableroService.obtener(user),
     productosService.listar(user, new URLSearchParams("bajoMinimo=true&pageSize=5")),
+    // Solo para mostrar la miniatura de los más vendidos.
+    productosService.listar(user, new URLSearchParams("pageSize=100")),
   ]);
+  const imagenes = new Map(catalogo.data.map((p) => [p.id, p.imagen]));
+  const maxUnidades = Math.max(1, ...tablero.masVendidos.map((p) => p.unidades));
 
   return (
     <Stack gap="6">
       <PageHeader
+        eyebrow="Tablero"
         title={`Hola, ${user.nombre.split(" ")[0]}`}
         description="Resumen de la actividad comercial de tu negocio."
         actions={
@@ -83,9 +90,9 @@ export default async function InicioPage() {
           </CardHeader>
           <CardContent>
             {tablero.masVendidos.length === 0 ? (
-              <Text size="sm" tone="muted" align="center" className="py-8">Todavía no hay ventas en el mes.</Text>
+              <Text size="sm" tone="muted" align="center" className="py-10">Todavía no hay ventas en el mes.</Text>
             ) : (
-              <Table>
+              <Table ocultar={{ sm: [3] }}>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Producto</TableHead>
@@ -94,11 +101,19 @@ export default async function InicioPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {tablero.masVendidos.map((producto) => (
+                  {tablero.masVendidos.map((producto, indice) => (
                     <TableRow key={producto.productoId}>
                       <TableCell>
-                        <Text weight="medium">{producto.descripcion}</Text>
-                        <Text size="xs" tone="muted">{producto.codigo}</Text>
+                        <Inline align="center" gap="3">
+                          <ProductImage src={imagenes.get(producto.productoId)} alt={producto.descripcion} className="h-10 w-10" />
+                          <Stack gap="1.5" className="min-w-0 flex-1">
+                            <Inline align="baseline" gap="2">
+                              <Text as="span" size="xs" weight="semibold" tone="primary" tabular>#{indice + 1}</Text>
+                              <Text as="span" weight="medium">{producto.descripcion}</Text>
+                            </Inline>
+                            <ProportionBar valor={producto.unidades} maximo={maxUnidades} />
+                          </Stack>
+                        </Inline>
                       </TableCell>
                       <TableCell className="tabular text-right">{producto.unidades}</TableCell>
                       <TableCell className="tabular text-right font-medium">{formatMoney(producto.importe)}</TableCell>
@@ -138,8 +153,10 @@ export default async function InicioPage() {
                   {reposicion.data.map((producto) => (
                     <TableRow key={producto.id}>
                       <TableCell>
-                        <Text weight="medium">{producto.descripcion}</Text>
-                        <Text size="xs" tone="muted">{producto.codigo}</Text>
+                        <Stack gap="1.5">
+                          <Text weight="medium">{producto.descripcion}</Text>
+                          <ProportionBar valor={producto.existencia} maximo={producto.stockMinimo} tono="warning" />
+                        </Stack>
                       </TableCell>
                       <TableCell className="tabular text-right font-semibold text-warning">{producto.existencia}</TableCell>
                       <TableCell className="tabular text-right text-muted-foreground">{producto.stockMinimo}</TableCell>

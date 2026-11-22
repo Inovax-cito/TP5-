@@ -222,6 +222,11 @@
   .print-sheet * {
     color: black !important;
     box-shadow: none !important;
+    border-color: #c8c8c8 !important;
+  }
+  .bg-background,
+  .bg-paper-desk {
+    background: white !important;
   }
   .print-full .text-muted-foreground {
     color: #444 !important;

@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft, CreditCard, Mail, MapPin, Phone } from "lucide-react";
-import { PageHeader } from "@/components/common/page-header";
+import { ArrowLeft, CreditCard, Mail, MapPin, Phone, ReceiptText } from "lucide-react";
+import { EntityHeader } from "@/components/common/entity-header";
+import { iniciales } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import { FilterBar } from "@/components/common/filter-bar";
-import { StatCard } from "@/components/common/stat-card";
-import { EstadoFacturaBadge } from "@/components/common/status-badge";
+import { ActivoBadge, EstadoFacturaBadge } from "@/components/common/status-badge";
 import { ClienteActions } from "@/components/clientes/cliente-actions";
 import { PagoCreateButton } from "@/components/clientes/pago-create-button";
 import { Grid, Inline, Stack, Text } from "@/components/layout/primitives";
@@ -63,37 +64,54 @@ export default async function ClienteDetallePage({
         </Link>
       </Button>
 
-      <PageHeader
+      <EntityHeader
+        media={
+          <Inline
+            as="span"
+            align="center"
+            justify="center"
+            className="h-16 w-16 shrink-0 rounded-full bg-gradient-to-br from-primary to-primaryText text-xl font-bold text-primary-foreground shadow-elevation-1 sm:h-20 sm:w-20 sm:text-2xl"
+          >
+            {iniciales(cliente.nombre)}
+          </Inline>
+        }
+        eyebrow="Cliente"
         title={cliente.nombre}
-        description={`${cliente.tipoDoc} ${cliente.nroDoc} · ${cliente.activo ? "Activo" : "Inactivo"}`}
+        meta={
+          <>
+            <Text as="span" tabular weight="medium" className="text-foreground">{cliente.tipoDoc} {cliente.nroDoc}</Text>
+            <Text as="span">·</Text>
+            <ActivoBadge activo={cliente.activo} />
+            {cliente.cuentaCorriente && <Badge variant="default">Cuenta corriente</Badge>}
+          </>
+        }
         actions={
           <>
             <PagoCreateButton cliente={cliente} variant="outline" />
             <ClienteActions cliente={cliente} />
           </>
         }
+        stats={[
+          {
+            label: "Saldo actual",
+            valor: formatMoney(cliente.saldo),
+            tono: cliente.saldo > 0 ? "warning" : "success",
+            destacada: true,
+            detalle: cliente.saldo > 0 ? "Deuda en cuenta corriente" : "Sin deuda",
+          },
+          { label: "Límite de crédito", valor: cliente.limiteCredito === null ? "Sin límite" : formatMoney(cliente.limiteCredito) },
+          {
+            label: "Disponible",
+            valor: cliente.disponible === null ? "Sin límite" : formatMoney(cliente.disponible),
+            tono: "primary",
+          },
+        ]}
       />
-
-      <Grid gap="4" cols={{ sm: 3 }}>
-        <StatCard titulo="Saldo actual" valor={formatMoney(cliente.saldo)} icono={CreditCard} tono={cliente.saldo > 0 ? "warning" : "success"} />
-        <StatCard
-          titulo="Límite de crédito"
-          valor={cliente.limiteCredito === null ? "Sin límite" : formatMoney(cliente.limiteCredito)}
-          icono={CreditCard}
-          tono="muted"
-        />
-        <StatCard
-          titulo="Disponible"
-          valor={cliente.disponible === null ? "Sin límite" : formatMoney(cliente.disponible)}
-          icono={CreditCard}
-          tono="primary"
-        />
-      </Grid>
 
       <Tabs defaultValue="datos">
         <TabsList>
-          <TabsTrigger value="datos">Datos y facturas</TabsTrigger>
-          <TabsTrigger value="cuenta">Cuenta corriente</TabsTrigger>
+          <TabsTrigger value="datos"><ReceiptText /> Datos y facturas</TabsTrigger>
+          <TabsTrigger value="cuenta"><CreditCard /> Cuenta corriente</TabsTrigger>
         </TabsList>
 
         <TabsContent value="datos" className="space-y-4">

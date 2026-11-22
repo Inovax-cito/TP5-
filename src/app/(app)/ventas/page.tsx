@@ -138,7 +138,7 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
           />
         ) : (
           <>
-            <Table ocultar={{ sm: [2, 6], md: [5], lg: [4] }}>
+            <Table ocultar={{ sm: [2, 6], lg: [4, 5] }}>
               <TableHeader>
                 <TableRow>
                   <TableHead>Número</TableHead>

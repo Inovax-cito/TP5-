@@ -12,7 +12,7 @@ import {
 import { BrandMark } from "@/components/layout/brand-mark";
 import { RolBadge } from "@/components/common/status-badge";
 import type { AuthUser } from "@/lib/db/schema";
-import { cn } from "@/lib/utils";
+import { cn, iniciales } from "@/lib/utils";
 
 /** Mismos módulos, rutas y orden de siempre; los grupos son solo rótulos visuales. */
 const GRUPOS = [
@@ -35,15 +35,6 @@ const GRUPOS = [
     modulos: [{ href: "/usuarios", label: "Usuarios", icon: UserCog, todos: false, activoEn: ["/usuarios"] }],
   },
 ];
-
-export function iniciales(nombre: string) {
-  return nombre
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((parte) => parte[0]?.toUpperCase())
-    .join("");
-}
 
 export function SidebarNav({ user, onNavigate }: { user: AuthUser; onNavigate?: () => void }) {
   const pathname = usePathname();

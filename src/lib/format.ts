@@ -22,6 +22,23 @@ export function formatAmount(cents: number): string {
   return `${numberFormatter.format(Math.floor(abs / 100))},${String(abs % 100).padStart(2, "0")}`;
 }
 
+const compactFormatter = new Intl.NumberFormat("es-AR", { notation: "compact", maximumFractionDigits: 1 });
+
+/** 35000000 -> "$ 350 mil"; 120000000 -> "$ 1,2 M". Para ejes de gráficos. */
+export function formatMoneyCompact(cents: number): string {
+  return `$ ${compactFormatter.format(Math.trunc(cents) / 100)}`;
+}
+
+/** Porcentaje con un decimal en formato local: 0.4567 -> "45,7 %". */
+export function formatPercent(ratio: number): string {
+  return `${new Intl.NumberFormat("es-AR", { maximumFractionDigits: 1 }).format(ratio * 100)} %`;
+}
+
+/** "2026-11-05" (día calendario) -> "05/11". */
+export function formatDayMonth(dateStr: string): string {
+  return `${dateStr.slice(8, 10)}/${dateStr.slice(5, 7)}`;
+}
+
 /** "12.500,50" -> 1250050 (centavos). Acepta puntos y comas. */
 export function parseAmount(value: string): number | null {
   const clean = value.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");

@@ -17,7 +17,8 @@ import {
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { RolBadge } from "@/components/common/status-badge";
 import { BrandMark } from "./brand-mark";
-import { SidebarNav, iniciales } from "./sidebar-nav";
+import { SidebarNav } from "./sidebar-nav";
+import { iniciales } from "@/lib/utils";
 import type { AuthUser } from "@/lib/db/schema";
 
 /** Rótulos de las migas de pan. Solo se enlazan los segmentos que tienen página propia. */

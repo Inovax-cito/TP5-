@@ -1,11 +1,13 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft, Boxes, Package, TriangleAlert } from "lucide-react";
-import { PageHeader } from "@/components/common/page-header";
+import { ArrowLeft, History } from "lucide-react";
+import { EntityHeader } from "@/components/common/entity-header";
+import { ProportionBar } from "@/components/common/proportion-bar";
+import { ActivoBadge, BajoMinimoBadge } from "@/components/common/status-badge";
 import { PaginationLinks } from "@/components/common/pagination-links";
-import { StatCard } from "@/components/common/stat-card";
-import { Grid, Stack, Text } from "@/components/layout/primitives";
+import { Stack, Text } from "@/components/layout/primitives";
+import { Badge } from "@/components/ui/badge";
 import { MovimientosTable } from "@/components/productos/movimientos-table";
 import { MovimientoCreateButton } from "@/components/productos/movimiento-create-button";
 import { ProductImage } from "@/components/productos/product-image";
@@ -64,35 +66,51 @@ export default async function ProductoDetallePage({
         </Link>
       </Button>
 
-      <PageHeader
+      <EntityHeader
+        media={<ProductImage src={producto.imagen} alt={producto.descripcion} className="h-16 w-16 rounded-card sm:h-20 sm:w-20" />}
+        eyebrow="Producto"
         title={producto.descripcion}
-        description={`${producto.codigo} · ${producto.categoria.nombre}`}
-        actions={
+        meta={
           <>
-            {user.rol === "admin" && <MovimientoCreateButton producto={producto} />}
-            {user.rol === "admin" && <ProductActions producto={producto} categorias={categorias} />}
+            <Text as="span" tabular weight="medium" className="text-foreground">{producto.codigo}</Text>
+            <Text as="span">·</Text>
+            <Badge variant="secondary">{producto.categoria.nombre}</Badge>
+            <ActivoBadge activo={producto.activo} />
+            {producto.bajoMinimo && <BajoMinimoBadge />}
           </>
         }
+        actions={
+          user.rol === "admin" ? (
+            <>
+              <MovimientoCreateButton producto={producto} />
+              <ProductActions producto={producto} categorias={categorias} />
+            </>
+          ) : undefined
+        }
+        stats={[
+          {
+            label: "Existencia actual",
+            valor: String(producto.existencia),
+            tono: producto.bajoMinimo ? "warning" : "success",
+            destacada: true,
+            detalle: (
+              <Stack gap="1.5">
+                <Text as="span">{producto.bajoMinimo ? "Por debajo del mínimo" : "Existencia normal"}</Text>
+                <ProportionBar valor={producto.existencia} maximo={Math.max(producto.stockMinimo * 2, producto.existencia)} tono={producto.bajoMinimo ? "warning" : "primary"} />
+              </Stack>
+            ),
+          },
+          { label: "Precio de venta", valor: formatMoney(producto.precio) },
+          { label: "Stock mínimo", valor: String(producto.stockMinimo), detalle: "Aviso de reposición" },
+        ]}
       />
 
-      <Card className="flex items-center gap-4 p-4">
-        <ProductImage src={producto.imagen} alt={producto.descripcion} className="h-20 w-20" />
-        <Stack gap="1" className="min-w-0">
-          <Text weight="semibold" className="break-words">{producto.descripcion}</Text>
-          <Text size="xs" tone="muted">{producto.codigo} · {producto.categoria.nombre}</Text>
-          <Text size="xs" tone="muted">Imagen del catálogo</Text>
-        </Stack>
-      </Card>
-
-      <Grid gap="4" cols={{ sm: 3 }}>
-        <StatCard titulo="Existencia actual" valor={String(producto.existencia)} icono={Boxes} tono={producto.bajoMinimo ? "warning" : "success"} detalle={producto.bajoMinimo ? "Por debajo del mínimo" : "Existencia normal"} />
-        <StatCard titulo="Precio de venta" valor={formatMoney(producto.precio)} icono={Package} />
-        <StatCard titulo="Stock mínimo" valor={String(producto.stockMinimo)} icono={TriangleAlert} detalle="Aviso de reposición" tono="muted" />
-      </Grid>
-
       <Card>
-        <CardHeader>
-          <CardTitle>Historial de movimientos</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0">
+          <CardTitle className="flex items-center gap-2">
+            <History className="h-4 w-4 text-muted-foreground" /> Historial de movimientos
+          </CardTitle>
+          <Text as="span" size="xs" tone="muted">{movimientos.total} movimientos</Text>
         </CardHeader>
         <CardContent>
           <Suspense fallback={<Skeleton className="h-64 w-full" />}>
