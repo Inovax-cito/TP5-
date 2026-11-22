@@ -37,6 +37,7 @@ export const productos = sqliteTable(
     id: integer("id").primaryKey({ autoIncrement: true }),
     codigo: text("codigo").notNull().unique(),
     descripcion: text("descripcion").notNull(),
+    imagen: text("imagen"),
     categoriaId: integer("categoria_id")
       .notNull()
       .references(() => categorias.id),

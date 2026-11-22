@@ -19,6 +19,7 @@ const seleccion = {
   id: productos.id,
   codigo: productos.codigo,
   descripcion: productos.descripcion,
+  imagen: productos.imagen,
   categoriaId: categorias.id,
   categoriaNombre: categorias.nombre,
   precio: productos.precio,
@@ -32,6 +33,7 @@ type ProductoRow = {
   id: number;
   codigo: string;
   descripcion: string;
+  imagen: string | null;
   categoriaId: number;
   categoriaNombre: string;
   precio: number;
@@ -46,6 +48,7 @@ function publico(row: ProductoRow) {
     id: row.id,
     codigo: row.codigo,
     descripcion: row.descripcion,
+    imagen: row.imagen,
     categoria: { id: row.categoriaId, nombre: row.categoriaNombre },
     precio: row.precio,
     existencia: row.existencia,
@@ -136,6 +139,7 @@ export async function crear(usuario: AuthUser, input: unknown) {
       .values({
         codigo: data.codigo,
         descripcion: data.descripcion,
+        imagen: data.imagen || null,
         categoriaId: data.categoriaId,
         precio: data.precio,
         stockMinimo: data.stockMinimo,
@@ -160,6 +164,7 @@ export async function crear(usuario: AuthUser, input: unknown) {
       id: row.id,
       codigo: row.codigo,
       descripcion: row.descripcion,
+      imagen: row.imagen,
       categoria: { id: categoria.id, nombre: categoria.nombre },
       precio: row.precio,
       existencia,
@@ -197,6 +202,7 @@ export async function actualizar(usuario: AuthUser, id: number, input: unknown) 
     .set({
       ...(data.codigo !== undefined ? { codigo: data.codigo } : {}),
       ...(data.descripcion !== undefined ? { descripcion: data.descripcion } : {}),
+      ...(data.imagen !== undefined ? { imagen: data.imagen || null } : {}),
       ...(data.categoriaId !== undefined ? { categoriaId: data.categoriaId } : {}),
       ...(data.precio !== undefined ? { precio: data.precio } : {}),
       ...(data.stockMinimo !== undefined ? { stockMinimo: data.stockMinimo } : {}),

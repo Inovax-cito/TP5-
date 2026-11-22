@@ -2,8 +2,10 @@ import { config } from "dotenv";
 
 config();
 
+import { eq, sql } from "drizzle-orm";
 import { db } from "../lib/db";
-import { categorias, secuencias, usuarios, type AuthUser } from "../lib/db/schema";
+import { categorias, productos, secuencias, usuarios, type AuthUser } from "../lib/db/schema";
+import { CATALOGO } from "../lib/catalogo";
 import { hashPassword } from "../lib/auth/password";
 import * as categoriasService from "../lib/services/categorias.service";
 import * as productosService from "../lib/services/productos.service";
@@ -25,39 +27,6 @@ function elegir<T>(lista: T[]): T {
   return lista[Math.floor(rand() * lista.length)];
 }
 
-const CATALOGO: Array<[string, string, number]> = [
-  ["Herramientas", "Martillo carpintero 500 g", 1250000],
-  ["Herramientas", "Destornillador plano 6 pulgadas", 480000],
-  ["Herramientas", "Destornillador Phillips 8 pulgadas", 560000],
-  ["Herramientas", "Pinza universal 200 mm", 890000],
-  ["Herramientas", "Serrucho de mano 24 pulgadas", 2140000],
-  ["Herramientas", "Nivel de burbuja 60 cm", 1670000],
-  ["Eléctrica", "Cable unipolar 2,5 mm x 100 m", 4890000],
-  ["Eléctrica", "Cable bipolar 1,5 mm x 100 m", 6120000],
-  ["Eléctrica", "Interruptor simple 10 A", 340000],
-  ["Eléctrica", "Enchufe macho 10 A", 290000],
-  ["Eléctrica", "Tablero eléctrico 12 ramas", 18900000],
-  ["Eléctrica", "Llave termomagnética 25 A", 2450000],
-  ["Iluminación", "Lámpara LED 12 W", 320000],
-  ["Iluminación", "Lámpara LED 18 W", 450000],
-  ["Iluminación", "Reflectores LED 50 W", 2390000],
-  ["Iluminación", "Tubo LED 18 W 120 cm", 890000],
-  ["Iluminación", "Ampolleta incandescente 60 W", 210000],
-  ["Iluminación", "Colgante de pared metálico", 1780000],
-  ["Ferretería", "Tornillo tirafondo 5 x 50 (x100)", 1750000],
-  ["Ferretería", "Clavo cabeza plana 2 pulgadas (x100)", 980000],
-  ["Ferretería", "Cinta aisladora 20 m", 190000],
-  ["Ferretería", "Cinta de enmascarar 50 m", 420000],
-  ["Ferretería", "Pegamento universal 50 g", 680000],
-  ["Ferretería", "Silicona neutra 300 ml", 1150000],
-  ["Jardinería", "Manguera de jardín 15 m", 4590000],
-  ["Jardinería", "Regadera plástica 10 L", 1290000],
-  ["Jardinería", "Pala de jardín", 2180000],
-  ["Jardinería", "Tijera de podar", 3450000],
-  ["Jardinería", "Fertilizante líquido 1 L", 1560000],
-  ["Jardinería", "Sustrato universal 20 kg", 3990000],
-];
-
 const CLIENTES = [
   ["Mariana López", "28.456.123", true],
   ["Carlos Ramírez", "31.220.987", true],
@@ -71,9 +40,25 @@ const CLIENTES = [
   ["Fábrica Sur S.R.L.", "30-12345678-9", true],
 ] as const;
 
+/** Las miniaturas se pueden agregar después de una migración sin recrear la base. */
+async function completarImagenes() {
+  const sinImagen = await db
+    .select({ id: productos.id, codigo: productos.codigo })
+    .from(productos)
+    .where(sql`${productos.imagen} is null`);
+  for (const producto of sinImagen) {
+    await db
+      .update(productos)
+      .set({ imagen: `/productos/${producto.codigo}.svg` })
+      .where(eq(productos.id, producto.id));
+  }
+  if (sinImagen.length) console.log(`  ${sinImagen.length} miniaturas asignadas.`);
+}
+
 async function main() {
   const [existente] = await db.select({ id: usuarios.id }).from(usuarios).limit(1);
   if (existente) {
+    await completarImagenes();
     console.log("Los datos de prueba ya están cargados. Borrá dev.db para volver a generarlos.");
     return;
   }
@@ -142,6 +127,7 @@ async function main() {
     const producto = await productosService.crear(admin, {
       codigo,
       descripcion,
+      imagen: `/productos/${codigo}.svg`,
       categoriaId: categoriaPorNombre.get(categoria)!,
       precio,
       stockMinimo: bajoMinimo ? 100 : entero(8, 20),

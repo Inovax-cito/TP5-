@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClienteForm } from "@/components/clientes/cliente-form";
+import { ProductImage } from "@/components/productos/product-image";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { formatMoney } from "@/lib/format";
 import { emitirFacturaSchema } from "@/lib/validations/facturas";
@@ -23,6 +24,7 @@ export type ProductoVenta = {
   id: number;
   codigo: string;
   descripcion: string;
+  imagen?: string | null;
   precio: number;
   existencia: number;
   categoria: { nombre: string };
@@ -245,13 +247,16 @@ export function NuevaVentaForm({
                     onClick={() => agregarProducto(producto)}
                     className="flex items-center justify-between gap-2 rounded-lg border p-3 text-left text-sm transition-colors hover:border-primary hover:bg-accent"
                   >
-                    <span>
-                      <span className="block font-medium">{producto.descripcion}</span>
-                      <span className="block text-xs text-muted-foreground">
-                        {producto.codigo} · {producto.existencia} disponibles
+                    <span className="flex min-w-0 items-center gap-2">
+                      <ProductImage src={producto.imagen} alt={producto.descripcion} className="h-9 w-9" />
+                      <span className="min-w-0">
+                        <span className="block truncate font-medium">{producto.descripcion}</span>
+                        <span className="block text-xs text-muted-foreground">
+                          {producto.codigo} · {producto.existencia} disponibles
+                        </span>
                       </span>
                     </span>
-                    <Plus className="h-4 w-4 text-primaryText" />
+                    <Plus className="h-4 w-4 shrink-0 text-primaryText" />
                   </button>
                 ))}
                 {productosFiltrados.length === 0 && (

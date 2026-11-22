@@ -12,6 +12,38 @@ export async function listar(usuario: Parameters<typeof requireAuth>[0]) {
   return db.select().from(categorias).where(eq(categorias.activa, true)).orderBy(categorias.nombre);
 }
 
+/** Categorías con una vista previa de sus productos para el tablero de imágenes. */
+export async function listarConProductos(usuario: Parameters<typeof requireAuth>[0]) {
+  const cats = await listar(usuario);
+  const productosActivos = await db
+    .select({
+      id: productos.id,
+      categoriaId: productos.categoriaId,
+      descripcion: productos.descripcion,
+      imagen: productos.imagen,
+    })
+    .from(productos)
+    .where(eq(productos.activo, true))
+    .orderBy(productos.descripcion);
+
+  const vistas = new Map<number, Array<{ id: number; descripcion: string; imagen: string | null }>>();
+  const totales = new Map<number, number>();
+  for (const producto of productosActivos) {
+    totales.set(producto.categoriaId, (totales.get(producto.categoriaId) ?? 0) + 1);
+    const actuales = vistas.get(producto.categoriaId) ?? [];
+    if (actuales.length < 4) {
+      actuales.push({ id: producto.id, descripcion: producto.descripcion, imagen: producto.imagen });
+      vistas.set(producto.categoriaId, actuales);
+    }
+  }
+
+  return cats.map((categoria) => ({
+    ...categoria,
+    productos: vistas.get(categoria.id) ?? [],
+    total: totales.get(categoria.id) ?? 0,
+  }));
+}
+
 /** RF-P7 */
 export async function crear(usuario: Parameters<typeof requireAdmin>[0], input: unknown) {
   requireAdmin(usuario);

@@ -7,6 +7,7 @@ import { PaginationLinks } from "@/components/common/pagination-links";
 import { StatCard } from "@/components/common/stat-card";
 import { MovimientosTable } from "@/components/productos/movimientos-table";
 import { MovimientoCreateButton } from "@/components/productos/movimiento-create-button";
+import { ProductImage } from "@/components/productos/product-image";
 import { ProductActions } from "@/components/productos/product-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,6 +73,15 @@ export default async function ProductoDetallePage({
           </>
         }
       />
+
+      <Card className="flex items-center gap-4 p-4">
+        <ProductImage src={producto.imagen} alt={producto.descripcion} className="h-20 w-20" />
+        <div className="min-w-0 space-y-1">
+          <p className="break-words font-semibold">{producto.descripcion}</p>
+          <p className="text-xs text-muted-foreground">{producto.codigo} · {producto.categoria.nombre}</p>
+          <p className="text-xs text-muted-foreground">Imagen del catálogo</p>
+        </div>
+      </Card>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard titulo="Existencia actual" valor={String(producto.existencia)} icono={Boxes} tono={producto.bajoMinimo ? "warning" : "success"} detalle={producto.bajoMinimo ? "Por debajo del mínimo" : "Existencia normal"} />

@@ -8,6 +8,7 @@ import { PaginationLinks } from "@/components/common/pagination-links";
 import { EmptyState } from "@/components/common/states";
 import { ActivoBadge } from "@/components/common/status-badge";
 import { ProductActions } from "@/components/productos/product-actions";
+import { ProductImage } from "@/components/productos/product-image";
 import { ProductoCreateButton } from "@/components/productos/producto-create-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -130,6 +131,7 @@ export default async function ProductosPage({ searchParams }: { searchParams: Pr
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Imagen</TableHead>
                   <TableHead>Código</TableHead>
                   <TableHead>Descripción</TableHead>
                   <TableHead>Categoría</TableHead>
@@ -142,6 +144,9 @@ export default async function ProductosPage({ searchParams }: { searchParams: Pr
               <TableBody>
                 {productos.data.map((producto) => (
                   <TableRow key={producto.id}>
+                    <TableCell>
+                      <ProductImage src={producto.imagen} alt={producto.descripcion} className="h-10 w-10" />
+                    </TableCell>
                     <TableCell className="font-mono text-xs font-medium">{producto.codigo}</TableCell>
                     <TableCell>
                       <Link href={`/productos/${producto.id}`} className="font-medium hover:underline">

@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Field } from "@/components/common/field";
+import { ProductImage } from "@/components/productos/product-image";
 import { Input } from "@/components/ui/input";
 import { MoneyInput } from "@/components/common/money-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -23,6 +24,7 @@ type Producto = {
   id: number;
   codigo: string;
   descripcion: string;
+  imagen?: string | null;
   categoria: { id: number };
   precio: number;
   stockMinimo: number;
@@ -46,6 +48,7 @@ export function ProductoForm({
   const [form, setForm] = useState({
     codigo: "",
     descripcion: "",
+    imagen: "",
     categoriaId: 0,
     precio: 0,
     stockMinimo: 0,
@@ -64,12 +67,13 @@ export function ProductoForm({
         ? {
             codigo: producto.codigo,
             descripcion: producto.descripcion,
+            imagen: producto.imagen ?? "",
             categoriaId: producto.categoria.id,
             precio: producto.precio,
             stockMinimo: producto.stockMinimo,
             stockInicial: 0,
           }
-        : { codigo: "", descripcion: "", categoriaId: categorias[0]?.id ?? 0, precio: 0, stockMinimo: 0, stockInicial: 0 },
+        : { codigo: "", descripcion: "", imagen: "", categoriaId: categorias[0]?.id ?? 0, precio: 0, stockMinimo: 0, stockInicial: 0 },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, producto]);
@@ -80,6 +84,7 @@ export function ProductoForm({
       ? {
           codigo: form.codigo,
           descripcion: form.descripcion,
+          imagen: form.imagen,
           categoriaId: form.categoriaId,
           precio: form.precio,
           stockMinimo: form.stockMinimo,
@@ -130,6 +135,21 @@ export function ProductoForm({
               </Select>
             </Field>
           </div>
+          <Field
+            label="Imagen (opcional)"
+            error={errores.imagen}
+            hint="URL http(s) o ruta local. Se muestra chica en el catálogo y en las categorías."
+          >
+            <div className="flex items-start gap-3">
+              <ProductImage src={form.imagen || null} alt="Vista previa del producto" className="h-12 w-12" />
+              <Input
+                className="min-w-0 flex-1"
+                value={form.imagen}
+                onChange={(e) => setForm({ ...form, imagen: e.target.value })}
+                placeholder="/productos/HE-001.svg o https://…"
+              />
+            </div>
+          </Field>
           <Field label="Descripción" required error={errores.descripcion}>
             <Input
               value={form.descripcion}

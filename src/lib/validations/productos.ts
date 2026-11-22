@@ -1,11 +1,12 @@
 import { z } from "zod";
-import { enteroNoNegativo, enteroPositivo, importe, texto, textoOpcional } from "./common";
+import { enteroNoNegativo, enteroPositivo, importe, imagenOpcional, texto, textoOpcional } from "./common";
 
 /** RF-P2: la existencia NO se acepta; se carga con un movimiento (RF-P4). */
 export const crearProductoSchema = z
   .object({
     codigo: texto("Código"),
     descripcion: texto("Descripción"),
+    imagen: imagenOpcional(),
     categoriaId: enteroPositivo("Categoría"),
     precio: importe("Precio"),
     stockMinimo: enteroNoNegativo("Stock mínimo").default(0),
@@ -17,6 +18,7 @@ export const actualizarProductoSchema = z
   .object({
     codigo: texto("Código").optional(),
     descripcion: texto("Descripción").optional(),
+    imagen: imagenOpcional(),
     categoriaId: enteroPositivo("Categoría").optional(),
     precio: importe("Precio").optional(),
     stockMinimo: enteroNoNegativo("Stock mínimo").optional(),

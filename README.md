@@ -21,6 +21,7 @@ Requiere **Node.js 20+** y **pnpm 10** (`corepack enable` o instalar con `npm i 
 pnpm install
 cp .env.example .env
 pnpm run db:migrate
+pnpm run img:generate
 pnpm run db:seed
 pnpm run dev
 ```
@@ -39,6 +40,8 @@ Abrir <http://localhost:3000>. La página `/login` es la única pública: todo l
 
 El seed crea además **5 categorías, 30 productos, 10 clientes, 50 facturas repartidas en los últimos 30 días** y varios pagos. Las facturas y los pagos se generan llamando a los **mismos servicios** que usa la aplicación, por lo que stock, saldos y numeración ya cumplen todas las reglas de negocio.
 
+Cada producto tiene una miniatura SVG en `public/productos/<codigo>.svg` (`pnpm run img:generate` las regenera) y el campo `imagen` de la tabla `productos` guarda su ruta o una URL `http(s)`. Se muestran en el catálogo, en la vista previa de cada categoría, en la ficha del producto y al buscar productos para una venta. Desde el formulario de producto se puede reemplazar la imagen por cualquier URL pública; si no carga, se muestra un ícono de respaldo.
+
 ### Comandos útiles
 
 | Comando | Uso |
@@ -46,6 +49,7 @@ El seed crea además **5 categorías, 30 productos, 10 clientes, 50 facturas rep
 | `pnpm run dev` | Servidor de desarrollo |
 | `pnpm run build` / `pnpm run start` | Build de producción y servidor |
 | `pnpm run typecheck` | Verificación de tipos (sin emitir archivos) |
+| `pnpm run img:generate` | Regenerar las 30 miniaturas SVG de los productos |
 | `pnpm run db:generate` | Generar una migración nueva con drizzle-kit |
 | `pnpm run db:migrate` | Aplicar migraciones a la base configurada en `DATABASE_URL` |
 | `pnpm run db:seed` | Cargar datos de prueba (verifica que la base esté vacía) |

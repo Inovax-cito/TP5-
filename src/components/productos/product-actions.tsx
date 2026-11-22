@@ -14,6 +14,7 @@ type Producto = {
   id: number;
   codigo: string;
   descripcion: string;
+  imagen?: string | null;
   categoria: { id: number };
   precio: number;
   stockMinimo: number;

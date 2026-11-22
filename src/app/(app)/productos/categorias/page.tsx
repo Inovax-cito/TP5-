@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { EmptyState } from "@/components/common/states";
 import { CategoriaActions } from "@/components/productos/categoria-actions";
 import { CategoriaCreateButton } from "@/components/productos/categoria-create-button";
+import { ProductImage } from "@/components/productos/product-image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -17,7 +18,7 @@ export default async function CategoriasPage() {
   if (!user) redirect("/login");
   if (user.rol !== "admin") redirect("/productos");
 
-  const categorias = await categoriasService.listar(user);
+  const categorias = await categoriasService.listarConProductos(user);
 
   return (
     <div className="space-y-6">
@@ -41,6 +42,7 @@ export default async function CategoriasPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Nombre</TableHead>
+                <TableHead>Vista previa</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -48,6 +50,33 @@ export default async function CategoriasPage() {
               {categorias.map((categoria) => (
                 <TableRow key={categoria.id}>
                   <TableCell className="font-medium">{categoria.nombre}</TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/productos?categoriaId=${categoria.id}`}
+                      className="flex items-center gap-1"
+                      title={`Ver ${categoria.total} productos de ${categoria.nombre}`}
+                    >
+                      {categoria.productos.length === 0 ? (
+                        <span className="text-xs text-muted-foreground">Sin productos</span>
+                      ) : (
+                        <>
+                          {categoria.productos.map((producto) => (
+                            <ProductImage
+                              key={producto.id}
+                              src={producto.imagen}
+                              alt={producto.descripcion}
+                              className="h-9 w-9 ring-2 ring-background"
+                            />
+                          ))}
+                          {categoria.total > categoria.productos.length && (
+                            <span className="text-xs text-muted-foreground">
+                              +{categoria.total - categoria.productos.length}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </Link>
+                  </TableCell>
                   <TableCell>
                     <CategoriaActions categoria={categoria} />
                   </TableCell>

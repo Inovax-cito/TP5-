@@ -16,6 +16,19 @@ export const emailOpcional = () =>
     .nullable()
     .transform((v) => v || null);
 
+/** Imagen de producto: URL pública http(s) o ruta local que empieza con /. */
+export const imagenOpcional = () =>
+  z
+    .string()
+    .trim()
+    .max(500, "La URL de la imagen no puede superar 500 caracteres.")
+    .refine(
+      (v) => v === "" || /^https?:\/\/[^\s]+$/i.test(v) || /^\/(?!\/)[^\s]*$/.test(v),
+      "Ingresá una URL http(s) o una ruta local que empiece con /.",
+    )
+    .optional()
+    .nullable();
+
 export const enteroPositivo = (label: string) =>
   z
     .number({ error: `${label} debe ser un número.` })
