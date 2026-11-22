@@ -263,6 +263,22 @@ pnpm run db:verify
 
 > La base local `dev.db` es solo desarrollo; no se incluye en el repositorio. El filesystem de Vercel es de solo lectura: por eso la base es remota en Turso y no se suben imágenes a disco.
 
+### 5. Dominio propio (opcional)
+
+La URL `https://<proyecto>.vercel.app` ya sirve para la entrega. Si además quieres un dominio propio:
+
+1. **Comprar el dominio** en Vercel (*Domains → Buy a domain*) o en cualquier registrador (GoDaddy, Namecheap, etc.).
+2. Usar un nombre con guión, no con guion bajo: `www.ferreteria-elmartillo.com`. El guion bajo (`_`) no es válido en nombres de host y puede romper el certificado TLS.
+3. En Vercel: **Settings → Domains → Add Existing**, cargar `www.ferreteria-elmartillo.com` y también `ferreteria-elmartillo.com` (sin www). Vercel muestra los registros DNS exactos para ese proyecto.
+4. En el registrador, configurar **uno** de estos dos métodos:
+   - **Recomendado si no usás correo en ese dominio:** cambiar los *nameservers* por los que indica Vercel (`ns1.vercel-dns.com`, `ns2.vercel-dns.com`, `ns3.vercel-dns.com`). Antes de hacerlo, copiar los registros DNS existentes (MX, TXT).
+   - **Si querés conservar el DNS actual:** crear un registro `A` para `@` (apex) apuntando a `76.76.21.21` y un `CNAME` para `www` con el valor único que Vercel muestra en la pantalla (por ejemplo `xxxx.vercel-dns-017.com`). No copiar el CNAME de otro proyecto.
+5. Configurar la redirección de `ferreteria-elmartillo.com` → `www.ferreteria-elmartillo.com` en *Settings → Domains*.
+6. Esperar la propagación DNS (minutos, hasta 48 h) y verificar que Vercel muestre el dominio como *Valid Configuration* con certificado SSL activo. Vercel emite el certificado HTTPS automáticamente.
+7. Reemplazar la **URL pública** del encabezado de este README por la definitiva.
+
+> Si el dominio ya está en otra cuenta de Vercel, éste pedirá verificarlo con un registro TXT en `_vercel.ferreteria-elmartillo.com`.
+
 ---
 
 ## Verificación final
