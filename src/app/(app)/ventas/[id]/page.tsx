@@ -118,7 +118,7 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
 
         <Separator className="my-6" />
 
-        <Table>
+        <Table ocultar={{ sm: [1, 4] }}>
           <TableHeader>
             <TableRow>
               <TableHead>Código</TableHead>
@@ -131,7 +131,7 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
           <TableBody>
             {factura.items.map((item, indice) => (
               <TableRow key={`${item.productoId}-${indice}`}>
-                <TableCell className="font-mono text-xs">{item.codigo}</TableCell>
+                <TableCell className="tabular text-xs">{item.codigo}</TableCell>
                 <TableCell className="text-sm">{item.descripcion}</TableCell>
                 <TableCell className="tabular text-right">{item.cantidad}</TableCell>
                 <TableCell className="tabular text-right text-sm">{formatMoney(item.precioUnitario)}</TableCell>

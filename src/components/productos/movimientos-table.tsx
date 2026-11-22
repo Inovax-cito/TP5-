@@ -31,11 +31,15 @@ export function MovimientosTable({
   mostrarProducto?: boolean;
 }) {
   if (movimientos.length === 0) {
-    return <p className="py-10 text-center text-sm text-muted-foreground">No hay movimientos registrados.</p>;
+    return <p className="py-12 text-center text-sm text-muted-foreground">No hay movimientos registrados.</p>;
   }
 
+  // En pantallas chicas se ocultan existencia, motivo, usuario y referencia.
+  const o = mostrarProducto ? 1 : 0;
+  const ocultar = { sm: [4 + o], md: [5 + o, 6 + o, 7 + o] } as { sm: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)[]; md: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)[] };
+
   return (
-    <Table>
+    <Table ocultar={ocultar}>
       <TableHeader>
         <TableRow>
           {mostrarProducto && <TableHead>Producto</TableHead>}

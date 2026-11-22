@@ -1,16 +1,15 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { FolderTree, History, TriangleAlert } from "lucide-react";
+import { FolderTree, History } from "lucide-react";
 import { PageHeader } from "@/components/common/page-header";
 import { FilterBar } from "@/components/common/filter-bar";
 import { PaginationLinks } from "@/components/common/pagination-links";
 import { EmptyState } from "@/components/common/states";
-import { ActivoBadge } from "@/components/common/status-badge";
+import { ActivoBadge, BajoMinimoBadge } from "@/components/common/status-badge";
 import { ProductActions } from "@/components/productos/product-actions";
 import { ProductImage } from "@/components/productos/product-image";
 import { ProductoCreateButton } from "@/components/productos/producto-create-button";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,7 +18,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { formatMoney } from "@/lib/format";
 import * as categoriasService from "@/lib/services/categorias.service";
-import * as productosService from "@/lib/services/productos.service";
+import * as productosService from "@/lib/services/productos.service";
+
 import { Inline, Stack } from "@/components/layout/primitives";
 
 type Search = Record<string, string | string[] | undefined>;
@@ -129,7 +129,7 @@ export default async function ProductosPage({ searchParams }: { searchParams: Pr
           />
         ) : (
           <>
-            <Table>
+            <Table ocultar={{ sm: [2, 7], md: [4] }}>
               <TableHeader>
                 <TableRow>
                   <TableHead>Imagen</TableHead>
@@ -148,7 +148,7 @@ export default async function ProductosPage({ searchParams }: { searchParams: Pr
                     <TableCell>
                       <ProductImage src={producto.imagen} alt={producto.descripcion} className="h-10 w-10" />
                     </TableCell>
-                    <TableCell className="font-mono text-xs font-medium">{producto.codigo}</TableCell>
+                    <TableCell className="tabular text-xs font-medium">{producto.codigo}</TableCell>
                     <TableCell>
                       <Link href={`/productos/${producto.id}`} className="font-medium hover:underline">
                         {producto.descripcion}
@@ -160,9 +160,7 @@ export default async function ProductosPage({ searchParams }: { searchParams: Pr
                       <Inline as="span" inline align="center" gap="2">
                         {producto.existencia}
                         {producto.bajoMinimo && (
-                          <Badge variant="warning" title="Bajo el stock mínimo">
-                            <TriangleAlert className="h-3 w-3" /> Bajo mínimo
-                          </Badge>
+                          <BajoMinimoBadge />
                         )}
                       </Inline>
                     </TableCell>

@@ -135,7 +135,7 @@ export default async function ClienteDetallePage({
               {cliente.ultimasFacturas.length === 0 ? (
                 <Text size="sm" tone="muted" align="center" className="py-8">Este cliente todavía no tiene facturas.</Text>
               ) : (
-                <Table>
+                <Table ocultar={{ sm: [2, 3, 4] }}>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Número</TableHead>
@@ -149,7 +149,7 @@ export default async function ClienteDetallePage({
                   <TableBody>
                     {cliente.ultimasFacturas.map((factura) => (
                       <TableRow key={factura.id}>
-                        <TableCell className="font-mono text-xs">{factura.numeroFormateado}</TableCell>
+                        <TableCell className="tabular text-xs">{factura.numeroFormateado}</TableCell>
                         <TableCell className="text-xs">{formatDate(factura.fecha)}</TableCell>
                         <TableCell className="text-xs text-muted-foreground">{factura.forma.replace("_", " ")}</TableCell>
                         <TableCell>

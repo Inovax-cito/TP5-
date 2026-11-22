@@ -44,11 +44,11 @@ export function FilterBar({ filtros, className }: { filtros: Filtro[]; className
   const hayFiltros = Object.values(valores).some(Boolean);
 
   return (
-    <form onSubmit={aplicar} className={cn("rounded-xl border bg-card p-4 shadow-sm", className)}>
+    <form onSubmit={aplicar} className={cn("rounded-card border border-border/80 bg-card p-4 shadow-elevation-1 sm:p-5", className)}>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
         {filtros.map((filtro) => (
           <div key={filtro.name} className="space-y-1.5">
-            <Label htmlFor={`f-${filtro.name}`} className="text-xs">
+            <Label htmlFor={`f-${filtro.name}`} className="text-micro uppercase text-muted-foreground">
               {filtro.label}
             </Label>
             {filtro.tipo === "select" ? (
@@ -56,7 +56,7 @@ export function FilterBar({ filtros, className }: { filtros: Filtro[]; className
                 id={`f-${filtro.name}`}
                 value={valores[filtro.name] ?? ""}
                 onChange={(e) => setValores((v) => ({ ...v, [filtro.name]: e.target.value }))}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-10 w-full rounded-control border border-input bg-card px-3 py-2 text-sm shadow-elevation-1 transition hover:border-neutral-300 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20"
               >
                 {(filtro.opciones ?? []).map((opcion) => (
                   <option key={opcion.value} value={opcion.value}>

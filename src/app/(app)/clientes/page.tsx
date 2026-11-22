@@ -96,7 +96,7 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
           <EmptyState title="No se encontraron clientes" description="Probá con otro nombre o documento." />
         ) : (
           <>
-            <Table>
+            <Table ocultar={{ sm: [2, 4, 6], lg: [3] }}>
               <TableHeader>
                 <TableRow>
                   <TableHead>Cliente</TableHead>
@@ -116,7 +116,7 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
                         {cliente.nombre}
                       </Link>
                     </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
+                    <TableCell className="tabular text-xs text-muted-foreground">
                       {cliente.tipoDoc} {cliente.nroDoc}
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">{cliente.email ?? cliente.telefono ?? "-"}</TableCell>

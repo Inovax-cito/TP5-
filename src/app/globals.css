@@ -152,6 +152,7 @@
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum", "zero" 0;
     letter-spacing: -0.01em;
+    white-space: nowrap;
   }
   .scrollbar-thin {
     scrollbar-width: thin;

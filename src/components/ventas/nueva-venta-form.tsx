@@ -453,7 +453,7 @@ export function NuevaVentaForm({
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Punto de venta</span>
-            <span className="font-mono text-xs">{proximoNumero}</span>
+            <span className="tabular text-xs">{proximoNumero}</span>
           </div>
           <div className="border-t pt-4">
             <div className="flex items-end justify-between">
