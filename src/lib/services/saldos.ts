@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, lte, sql } from "drizzle-orm";
 import { db, type Db, type Tx } from "@/lib/db";
 import { movimientosCuenta, secuencias } from "@/lib/db/schema";
 
@@ -24,6 +24,19 @@ export async function getSaldo(clienteId: number, executor: Db | Tx = db): Promi
     })
     .from(movimientosCuenta)
     .where(eq(movimientosCuenta.clienteId, clienteId));
+
+  return Number(rows[0]?.saldo ?? 0);
+}
+
+/** RF-C5: saldo al momento de un recibo, para que la reimpresión coincida con el original. */
+export async function getSaldoHasta(clienteId: number, fecha: Date): Promise<number> {
+  const rows = await db
+    .select({
+      saldo: sql<number>`coalesce(sum(case when ${movimientosCuenta.tipo} = 'debito'
+        then ${movimientosCuenta.importe} else -${movimientosCuenta.importe} end), 0)`,
+    })
+    .from(movimientosCuenta)
+    .where(and(eq(movimientosCuenta.clienteId, clienteId), lte(movimientosCuenta.fecha, fecha)));
 
   return Number(rows[0]?.saldo ?? 0);
 }

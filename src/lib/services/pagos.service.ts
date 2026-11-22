@@ -6,7 +6,7 @@ import { ApiError, err } from "@/lib/errors";
 import { formatRecibo } from "@/lib/format";
 import { parseOrThrow } from "@/lib/validations/parse";
 import { registrarPagoSchema } from "@/lib/validations/clientes";
-import { getSaldo, nextSecuencia } from "./saldos";
+import { getSaldo, getSaldoHasta, nextSecuencia } from "./saldos";
 
 const PUNTO_VENTA_RECIBOS = 1;
 
@@ -74,6 +74,11 @@ export async function registrar(
   return db.transaction(async (tx) => {
     const [cliente] = await tx.select().from(clientes).where(eq(clientes.id, clienteId)).limit(1);
     if (!cliente) throw err.noEncontrado("El cliente");
+    if (!cliente.activo) {
+      throw new ApiError(422, "VALIDACION", "El cliente está dado de baja.", [
+        { campo: "clienteId", mensaje: "El cliente está dado de baja." },
+      ]);
+    }
     if (!cliente.cuentaCorriente) {
       throw new ApiError(422, "CUENTA_CORRIENTE_NO_HABILITADA", "El cliente no tiene cuenta corriente habilitada.");
     }
@@ -124,5 +129,6 @@ export async function obtener(usuario: AuthUser, id: number) {
   requireAuth(usuario);
   const [row] = await reciboQuery().where(eq(pagos.id, id)).limit(1);
   if (!row) throw err.noEncontrado("El recibo");
-  return publico(row, await getSaldo(row.clienteId));
+  // Regla 11 / RF-C5: el recibo reimpreso muestra el saldo de su fecha, no el actual.
+  return publico(row, await getSaldoHasta(row.clienteId, row.fecha));
 }

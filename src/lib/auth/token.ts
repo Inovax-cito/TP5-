@@ -4,9 +4,12 @@ export const SESSION_COOKIE = "gc_sesion";
 export const MAX_AGE = 60 * 60 * 24 * 7;
 
 function secretKey() {
-  const value =
-    process.env.SESSION_SECRET ??
-    "secreto-de-desarrollo-cambiame-por-un-valor-largo-y-aleatorio";
+  const value = process.env.SESSION_SECRET?.trim();
+  // RF-U2 / sección 8: nunca firmar con un secreto conocido. Si falta la
+  // variable, fallamos en lugar de dejar una cookie de admin forjable.
+  if (!value || value.length < 16) {
+    throw new Error("SESSION_SECRET debe estar definida (16+ caracteres) en el entorno.");
+  }
   return new TextEncoder().encode(value);
 }
 

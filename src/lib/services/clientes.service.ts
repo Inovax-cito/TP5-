@@ -46,6 +46,11 @@ function publico(row: ClienteRow) {
   };
 }
 
+/** RF-C2: compara documentos sin puntos, guiones ni espacios (28.456.123 = 28456123). */
+function docNormalizadoSQL() {
+  return sql<string>`replace(replace(replace(lower(${clientes.nroDoc}), '.', ''), '-', ''), ' ', '')`;
+}
+
 /** RF-C1 / RF-C6: búsqueda por nombre o documento, con saldo calculado. */
 export async function listar(usuario: AuthUser, query: URLSearchParams) {
   requireAuth(usuario);
@@ -56,9 +61,8 @@ export async function listar(usuario: AuthUser, query: URLSearchParams) {
 
   const conditions: SQL[] = [];
   if (q) {
-    const docLimpio = sql<string>`replace(replace(replace(${clientes.nroDoc}, '.', ''), '-', ''), ' ', '')`;
     conditions.push(
-      or(like(clientes.nombre, `%${q}%`), like(sql`lower(${docLimpio})`, `%${normalizeDoc(q)}%`))!,
+      or(like(clientes.nombre, `%${q}%`), like(docNormalizadoSQL(), `%${normalizeDoc(q)}%`))!,
     );
   }
   if (conDeuda) conditions.push(sql`(${saldoExpr}) > 0`);
@@ -134,7 +138,7 @@ export async function crear(usuario: AuthUser, input: unknown) {
   const existe = await db
     .select({ id: clientes.id })
     .from(clientes)
-    .where(eq(clientes.nroDoc, nroDoc))
+    .where(eq(docNormalizadoSQL(), normalizeDoc(nroDoc)))
     .limit(1);
   if (existe.length) throw err.duplicado("DOCUMENTO_DUPLICADO", "Ya existe un cliente con ese documento.");
 
@@ -165,7 +169,7 @@ export async function actualizar(usuario: AuthUser, id: number, input: unknown) 
     const existe = await db
       .select({ id: clientes.id })
       .from(clientes)
-      .where(and(eq(clientes.nroDoc, data.nroDoc.trim()), ne(clientes.id, id)))
+      .where(and(eq(docNormalizadoSQL(), normalizeDoc(data.nroDoc)), ne(clientes.id, id)))
       .limit(1);
     if (existe.length) throw err.duplicado("DOCUMENTO_DUPLICADO", "Ya existe un cliente con ese documento.");
   }

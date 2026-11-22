@@ -113,6 +113,13 @@ export function formatRecibo(puntoVenta: number, numero: number): string {
   return `R ${formatNumero(puntoVenta, numero)}`;
 }
 
+/** RF-V8: reconoce `0001-00000001` para buscar una factura por su número impreso. */
+export function parseNumeroFactura(valor: string): { puntoVenta: number; numero: number } | null {
+  const match = /^(\d{4})-(\d{8})$/.exec(valor.trim());
+  if (!match) return null;
+  return { puntoVenta: Number(match[1]), numero: Number(match[2]) };
+}
+
 /** Normaliza un documento para buscarlo sin importar puntos ni guiones. */
 export function normalizeDoc(value: string): string {
   return value.replace(/[.\-\s]/g, "").toLowerCase();

@@ -13,7 +13,7 @@ import {
   type AuthUser,
 } from "@/lib/db/schema";
 import { ApiError, err } from "@/lib/errors";
-import { dayBoundsArg, formatNumero } from "@/lib/format";
+import { dayBoundsArg, formatNumero, parseNumeroFactura } from "@/lib/format";
 import { parseOrThrow } from "@/lib/validations/parse";
 import { anularFacturaSchema, emitirFacturaSchema } from "@/lib/validations/facturas";
 import { getSaldo, nextSecuencia } from "./saldos";
@@ -124,7 +124,9 @@ export async function emitir(usuario: AuthUser, input: unknown, opciones?: { fec
       const [c] = await tx.select().from(clientes).where(eq(clientes.id, data.clienteId)).limit(1);
       if (!c) throw err.noEncontrado("El cliente");
       if (!c.activo) {
-        throw new ApiError(422, "CUENTA_CORRIENTE_NO_HABILITADA", "El cliente está dado de baja.");
+        throw new ApiError(422, "VALIDACION", "El cliente está dado de baja.", [
+          { campo: "clienteId", mensaje: "El cliente está dado de baja." },
+        ]);
       }
       cliente = c;
     }
@@ -263,9 +265,15 @@ export async function listar(usuario: AuthUser, query: URLSearchParams) {
 
   const conditions: SQL[] = [];
   if (q) {
-    conditions.push(
-      or(like(facturas.numero, `%${q.replace(/\D/g, "")}%`), like(clientes.nombre, `%${q}%`))!,
-    );
+    const numero = parseNumeroFactura(q);
+    if (numero) {
+      // RF-V8: el usuario copia el número del comprobante (`0001-00000001`).
+      conditions.push(and(eq(facturas.puntoVenta, numero.puntoVenta), eq(facturas.numero, numero.numero))!);
+    } else {
+      conditions.push(
+        or(like(facturas.numero, `%${q.replace(/\D/g, "")}%`), like(clientes.nombre, `%${q}%`))!,
+      );
+    }
   }
   if (desde) conditions.push(gte(facturas.fecha, dayBoundsArg(desde).desde));
   if (hasta) conditions.push(lte(facturas.fecha, dayBoundsArg(hasta).hasta));
@@ -301,13 +309,17 @@ export async function listar(usuario: AuthUser, query: URLSearchParams) {
     .limit(limit)
     .offset(offset);
 
+  // El count usa los MISMOS joins que la consulta de datos: `$count(facturas, where)`
+  // genera una subconsulta correlacionada cuando el filtro incluye `clientes.nombre`
+  // y cuenta de más (RF-V8).
   const [{ count, totalEmitido }] = await db
     .select({
-      count: db.$count(facturas, where),
+      count: sql<number>`count(*)`,
       totalEmitido: sql<number>`coalesce(sum(case when ${facturas.estado} = 'emitida' then ${facturas.total} else 0 end), 0)`,
     })
     .from(facturas)
     .leftJoin(clientes, eq(facturas.clienteId, clientes.id))
+    .innerJoin(usuarios, eq(facturas.usuarioId, usuarios.id))
     .where(where);
 
   return {
@@ -386,14 +398,20 @@ export async function anular(usuario: AuthUser, id: number, input: unknown) {
     }
 
     if (factura.forma === "cuenta_corriente" && factura.clienteId) {
-      await tx.insert(movimientosCuenta).values({
-        clienteId: factura.clienteId,
-        tipo: "credito",
-        importe: factura.total,
-        descripcion: `Anulación Factura ${formatNumero(factura.puntoVenta, factura.numero)}`,
-        facturaId: id,
-        fecha,
-      });
+      // Regla 8: si la factura ya estaba pagada, acreditar el total dejaría
+      // saldo a favor. Se revierte sólo la deuda aún pendiente (RF-V9).
+      const saldo = await getSaldo(factura.clienteId, tx);
+      const importe = Math.min(factura.total, Math.max(saldo, 0));
+      if (importe > 0) {
+        await tx.insert(movimientosCuenta).values({
+          clienteId: factura.clienteId,
+          tipo: "credito",
+          importe,
+          descripcion: `Anulación Factura ${formatNumero(factura.puntoVenta, factura.numero)}`,
+          facturaId: id,
+          fecha,
+        });
+      }
     }
 
     return buildFactura(tx, id);

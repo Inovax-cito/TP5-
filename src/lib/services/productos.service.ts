@@ -330,7 +330,11 @@ export async function registrarMovimiento(usuario: AuthUser, productoId: number,
   requireAdmin(usuario);
   const data = parseOrThrow(movimientoStockSchema, input);
 
-  const [producto] = await db.select({ id: productos.id }).from(productos).where(eq(productos.id, productoId)).limit(1);
+  const [producto] = await db
+    .select({ id: productos.id, codigo: productos.codigo })
+    .from(productos)
+    .where(eq(productos.id, productoId))
+    .limit(1);
   if (!producto) throw err.noEncontrado("El producto");
 
   return db.transaction(async (tx) => {
@@ -354,7 +358,7 @@ export async function registrarMovimiento(usuario: AuthUser, productoId: number,
 
     return {
       ...movimientoPublico(row),
-      producto: { id: productoId },
+      producto: { id: productoId, codigo: producto.codigo },
     };
   });
 }
