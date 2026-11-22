@@ -1,29 +1,14 @@
-# dependencias
-node_modules/
-
-# Next.js
-.next/
-out/
-next-env.d.ts
-
-# entorno
+node_modules
+.next
+out
 .env
-.env*.local
-
-# SQLite local
+.env.local
 *.db
-*.db-journal
-
-# misc
-.DS_Store
+*.db-shm
+*.db-wal
 *.log
-*.tsbuildinfo
-
-# documentación de la cátedra (solo local)
-docs/
-
-# vercel
+.DS_Store
 .vercel
-
-# guía personal de prompts (solo local)
-PROMPTS.md
+*.tsbuildinfo
+next-env.d.ts
+coverage

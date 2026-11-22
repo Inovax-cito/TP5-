@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "3c3c873c-31ca-431f-a63e-273a4d5fb001",
+  "id": "3bfe55e3-29b0-4bc2-a334-9072a8729ef9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "categorias": {
@@ -29,12 +29,13 @@
           "autoincrement": false,
           "default": true
         },
-        "creado_en": {
-          "name": "creado_en",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
@@ -126,19 +127,19 @@
           "autoincrement": false,
           "default": true
         },
-        "creado_en": {
-          "name": "creado_en",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
-        "clientes_documento_uq": {
-          "name": "clientes_documento_uq",
+        "clientes_nro_doc_unique": {
+          "name": "clientes_nro_doc_unique",
           "columns": [
-            "tipo_doc",
             "nro_doc"
           ],
           "isUnique": true
@@ -154,12 +155,7 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "clientes_limite_no_negativo": {
-          "name": "clientes_limite_no_negativo",
-          "value": "\"clientes\".\"limite_credito\" IS NULL OR \"clientes\".\"limite_credito\" >= 0"
-        }
-      }
+      "checkConstraints": {}
     },
     "factura_items": {
       "name": "factura_items",
@@ -220,27 +216,20 @@
           "notNull": true,
           "autoincrement": false
         },
-        "creado_en": {
-          "name": "creado_en",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
-        "factura_items_producto_uq": {
-          "name": "factura_items_producto_uq",
+        "factura_items_factura_idx": {
+          "name": "factura_items_factura_idx",
           "columns": [
-            "factura_id",
-            "producto_id"
-          ],
-          "isUnique": true
-        },
-        "factura_items_producto_idx": {
-          "name": "factura_items_producto_idx",
-          "columns": [
-            "producto_id"
+            "factura_id"
           ],
           "isUnique": false
         }
@@ -275,12 +264,7 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "factura_items_cantidad_positiva": {
-          "name": "factura_items_cantidad_positiva",
-          "value": "\"factura_items\".\"cantidad\" > 0"
-        }
-      }
+      "checkConstraints": {}
     },
     "facturas": {
       "name": "facturas",
@@ -312,21 +296,8 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "cliente_id": {
-          "name": "cliente_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "usuario_id": {
-          "name": "usuario_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "total": {
           "name": "total",
@@ -335,11 +306,18 @@
           "notNull": true,
           "autoincrement": false
         },
-        "forma_pago": {
-          "name": "forma_pago",
+        "forma": {
+          "name": "forma",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "monto_recibido": {
+          "name": "monto_recibido",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
         "tarjeta_tipo": {
@@ -363,13 +341,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "monto_recibido": {
-          "name": "monto_recibido",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "estado": {
           "name": "estado",
           "type": "text",
@@ -385,31 +356,46 @@
           "notNull": false,
           "autoincrement": false
         },
-        "anulada_en": {
-          "name": "anulada_en",
+        "anulacion_fecha": {
+          "name": "anulacion_fecha",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "anulada_por_id": {
-          "name": "anulada_por_id",
+        "anulacion_usuario_id": {
+          "name": "anulacion_usuario_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "creado_en": {
-          "name": "creado_en",
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "usuario_id": {
+          "name": "usuario_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
-        "facturas_numero_uq": {
-          "name": "facturas_numero_uq",
+        "facturas_numero_idx": {
+          "name": "facturas_numero_idx",
           "columns": [
             "punto_venta",
             "numero"
@@ -429,16 +415,22 @@
             "cliente_id"
           ],
           "isUnique": false
-        },
-        "facturas_usuario_idx": {
-          "name": "facturas_usuario_idx",
-          "columns": [
-            "usuario_id"
-          ],
-          "isUnique": false
         }
       },
       "foreignKeys": {
+        "facturas_anulacion_usuario_id_usuarios_id_fk": {
+          "name": "facturas_anulacion_usuario_id_usuarios_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "anulacion_usuario_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "facturas_cliente_id_clientes_id_fk": {
           "name": "facturas_cliente_id_clientes_id_fk",
           "tableFrom": "facturas",
@@ -464,37 +456,11 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
-        },
-        "facturas_anulada_por_id_usuarios_id_fk": {
-          "name": "facturas_anulada_por_id_usuarios_id_fk",
-          "tableFrom": "facturas",
-          "tableTo": "usuarios",
-          "columnsFrom": [
-            "anulada_por_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "facturas_total_no_negativo": {
-          "name": "facturas_total_no_negativo",
-          "value": "\"facturas\".\"total\" >= 0"
-        },
-        "facturas_ultimos4": {
-          "name": "facturas_ultimos4",
-          "value": "\"facturas\".\"tarjeta_ultimos4\" IS NULL OR (length(\"facturas\".\"tarjeta_ultimos4\") = 4 AND \"facturas\".\"tarjeta_ultimos4\" NOT GLOB '*[^0-9]*')"
-        },
-        "facturas_cc_requiere_cliente": {
-          "name": "facturas_cc_requiere_cliente",
-          "value": "\"facturas\".\"forma_pago\" <> 'cuenta_corriente' OR \"facturas\".\"cliente_id\" IS NOT NULL"
-        }
-      }
+      "checkConstraints": {}
     },
     "movimientos_cuenta": {
       "name": "movimientos_cuenta",
@@ -532,7 +498,8 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "descripcion": {
           "name": "descripcion",
@@ -555,34 +522,20 @@
           "notNull": false,
           "autoincrement": false
         },
-        "creado_en": {
-          "name": "creado_en",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
-        "movimientos_cuenta_cliente_fecha_idx": {
-          "name": "movimientos_cuenta_cliente_fecha_idx",
+        "movimientos_cuenta_cliente_idx": {
+          "name": "movimientos_cuenta_cliente_idx",
           "columns": [
-            "cliente_id",
-            "fecha"
-          ],
-          "isUnique": false
-        },
-        "movimientos_cuenta_factura_idx": {
-          "name": "movimientos_cuenta_factura_idx",
-          "columns": [
-            "factura_id"
-          ],
-          "isUnique": false
-        },
-        "movimientos_cuenta_pago_idx": {
-          "name": "movimientos_cuenta_pago_idx",
-          "columns": [
-            "pago_id"
+            "cliente_id"
           ],
           "isUnique": false
         }
@@ -630,16 +583,7 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "movimientos_cuenta_importe_positivo": {
-          "name": "movimientos_cuenta_importe_positivo",
-          "value": "\"movimientos_cuenta\".\"importe\" > 0"
-        },
-        "movimientos_cuenta_un_origen": {
-          "name": "movimientos_cuenta_un_origen",
-          "value": "(\"movimientos_cuenta\".\"factura_id\" IS NULL) <> (\"movimientos_cuenta\".\"pago_id\" IS NULL)"
-        }
-      }
+      "checkConstraints": {}
     },
     "movimientos_stock": {
       "name": "movimientos_stock",
@@ -656,20 +600,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "usuario_id": {
-          "name": "usuario_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "factura_id": {
-          "name": "factura_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         },
         "tipo": {
@@ -707,41 +637,34 @@
           "notNull": false,
           "autoincrement": false
         },
-        "fecha": {
-          "name": "fecha",
+        "factura_id": {
+          "name": "factura_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "usuario_id": {
+          "name": "usuario_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "creado_en": {
-          "name": "creado_en",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
-        "movimientos_stock_producto_fecha_idx": {
-          "name": "movimientos_stock_producto_fecha_idx",
+        "movimientos_stock_producto_idx": {
+          "name": "movimientos_stock_producto_idx",
           "columns": [
-            "producto_id",
-            "fecha"
-          ],
-          "isUnique": false
-        },
-        "movimientos_stock_factura_idx": {
-          "name": "movimientos_stock_factura_idx",
-          "columns": [
-            "factura_id"
-          ],
-          "isUnique": false
-        },
-        "movimientos_stock_fecha_idx": {
-          "name": "movimientos_stock_fecha_idx",
-          "columns": [
-            "fecha"
+            "producto_id"
           ],
           "isUnique": false
         }
@@ -753,19 +676,6 @@
           "tableTo": "productos",
           "columnsFrom": [
             "producto_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "movimientos_stock_usuario_id_usuarios_id_fk": {
-          "name": "movimientos_stock_usuario_id_usuarios_id_fk",
-          "tableFrom": "movimientos_stock",
-          "tableTo": "usuarios",
-          "columnsFrom": [
-            "usuario_id"
           ],
           "columnsTo": [
             "id"
@@ -785,20 +695,24 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "movimientos_stock_usuario_id_usuarios_id_fk": {
+          "name": "movimientos_stock_usuario_id_usuarios_id_fk",
+          "tableFrom": "movimientos_stock",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "movimientos_stock_cantidad_no_cero": {
-          "name": "movimientos_stock_cantidad_no_cero",
-          "value": "\"movimientos_stock\".\"cantidad\" <> 0"
-        },
-        "movimientos_stock_resultante_no_negativa": {
-          "name": "movimientos_stock_resultante_no_negativa",
-          "value": "\"movimientos_stock\".\"existencia_resultante\" >= 0"
-        }
-      }
+      "checkConstraints": {}
     },
     "pagos": {
       "name": "pagos",
@@ -810,16 +724,8 @@
           "notNull": true,
           "autoincrement": true
         },
-        "punto_venta": {
-          "name": "punto_venta",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1
-        },
-        "numero": {
-          "name": "numero",
+        "numero_recibo": {
+          "name": "numero_recibo",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -830,21 +736,8 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "cliente_id": {
-          "name": "cliente_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "usuario_id": {
-          "name": "usuario_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "importe": {
           "name": "importe",
@@ -867,20 +760,34 @@
           "notNull": false,
           "autoincrement": false
         },
-        "creado_en": {
-          "name": "creado_en",
+        "cliente_id": {
+          "name": "cliente_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
-        "pagos_recibo_uq": {
-          "name": "pagos_recibo_uq",
+        "pagos_numero_recibo_unique": {
+          "name": "pagos_numero_recibo_unique",
           "columns": [
-            "punto_venta",
-            "numero"
+            "numero_recibo"
           ],
           "isUnique": true
         },
@@ -922,12 +829,7 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "pagos_importe_positivo": {
-          "name": "pagos_importe_positivo",
-          "value": "\"pagos\".\"importe\" > 0"
-        }
-      }
+      "checkConstraints": {}
     },
     "productos": {
       "name": "productos",
@@ -991,12 +893,13 @@
           "autoincrement": false,
           "default": true
         },
-        "creado_en": {
-          "name": "creado_en",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
@@ -1032,20 +935,55 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "productos_existencia_no_negativa": {
-          "name": "productos_existencia_no_negativa",
-          "value": "\"productos\".\"existencia\" >= 0"
+      "checkConstraints": {}
+    },
+    "secuencias": {
+      "name": "secuencias",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
         },
-        "productos_precio_no_negativo": {
-          "name": "productos_precio_no_negativo",
-          "value": "\"productos\".\"precio\" >= 0"
+        "tipo": {
+          "name": "tipo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         },
-        "productos_stock_minimo_no_negativo": {
-          "name": "productos_stock_minimo_no_negativo",
-          "value": "\"productos\".\"stock_minimo\" >= 0"
+        "ultimo": {
+          "name": "ultimo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "punto_venta": {
+          "name": "punto_venta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
         }
-      }
+      },
+      "indexes": {
+        "secuencias_tipo_unique": {
+          "name": "secuencias_tipo_unique",
+          "columns": [
+            "tipo"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
     "usuarios": {
       "name": "usuarios",
@@ -1083,7 +1021,8 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'vendedor'"
         },
         "activo": {
           "name": "activo",
@@ -1093,12 +1032,13 @@
           "autoincrement": false,
           "default": true
         },
-        "creado_en": {
-          "name": "creado_en",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {
