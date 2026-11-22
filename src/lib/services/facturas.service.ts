@@ -1,5 +1,4 @@
 import { and, desc, eq, gte, inArray, like, lte, or, sql, type SQL } from "drizzle-orm";
-import { getPagination } from "@/lib/api/pagination";
 import { requireAdmin, requireAuth } from "@/lib/auth/permissions";
 import { db, type Db, type Tx } from "@/lib/db";
 import {
@@ -14,8 +13,9 @@ import {
 } from "@/lib/db/schema";
 import { ApiError, err } from "@/lib/errors";
 import { dayBoundsArg, formatNumero, parseNumeroFactura } from "@/lib/format";
-import { parseOrThrow } from "@/lib/validations/parse";
+import { parseOrThrow, parseQuery } from "@/lib/validations/parse";
 import { anularFacturaSchema, emitirFacturaSchema } from "@/lib/validations/facturas";
+import { facturasQuerySchema } from "@/lib/validations/query";
 import { getSaldo, nextSecuencia } from "./saldos";
 import { moverStock } from "./stock.service";
 
@@ -254,14 +254,10 @@ export async function emitir(usuario: AuthUser, input: unknown, opciones?: { fec
 /** RF-V8: listado filtrado y paginado, sin renglones. */
 export async function listar(usuario: AuthUser, query: URLSearchParams) {
   requireAuth(usuario);
-  const { page, pageSize, offset, limit } = getPagination(query);
-  const q = query.get("q")?.trim();
-  const desde = query.get("desde");
-  const hasta = query.get("hasta");
-  const clienteId = Number(query.get("clienteId"));
-  const vendedorId = Number(query.get("vendedorId"));
-  const forma = query.get("forma");
-  const estado = query.get("estado");
+  const filtros = parseQuery(facturasQuerySchema, query);
+  const { page, pageSize, q, desde, hasta, clienteId, vendedorId, forma, estado } = filtros;
+  const offset = (page - 1) * pageSize;
+  const limit = pageSize;
 
   const conditions: SQL[] = [];
   if (q) {
@@ -277,14 +273,10 @@ export async function listar(usuario: AuthUser, query: URLSearchParams) {
   }
   if (desde) conditions.push(gte(facturas.fecha, dayBoundsArg(desde).desde));
   if (hasta) conditions.push(lte(facturas.fecha, dayBoundsArg(hasta).hasta));
-  if (Number.isInteger(clienteId) && clienteId > 0) conditions.push(eq(facturas.clienteId, clienteId));
-  if (Number.isInteger(vendedorId) && vendedorId > 0) conditions.push(eq(facturas.usuarioId, vendedorId));
-  if (forma && ["contado", "tarjeta", "cuenta_corriente"].includes(forma)) {
-    conditions.push(eq(facturas.forma, forma as "contado" | "tarjeta" | "cuenta_corriente"));
-  }
-  if (estado && ["emitida", "anulada"].includes(estado)) {
-    conditions.push(eq(facturas.estado, estado as "emitida" | "anulada"));
-  }
+  if (clienteId) conditions.push(eq(facturas.clienteId, clienteId));
+  if (vendedorId) conditions.push(eq(facturas.usuarioId, vendedorId));
+  if (forma) conditions.push(eq(facturas.forma, forma));
+  if (estado) conditions.push(eq(facturas.estado, estado));
   const where = conditions.length ? and(...conditions) : undefined;
 
   const rows = await db

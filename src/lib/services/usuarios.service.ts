@@ -1,5 +1,5 @@
-import { and, eq, like, ne, or } from "drizzle-orm";
-import { requireAdmin } from "@/lib/auth/permissions";
+import { and, asc, eq, like, ne, or } from "drizzle-orm";
+import { requireAdmin, requireAuth } from "@/lib/auth/permissions";
 import { generateTemporaryPassword, hashPassword } from "@/lib/auth/password";
 import { db } from "@/lib/db";
 import { usuarios, type AuthUser } from "@/lib/db/schema";
@@ -16,6 +16,16 @@ function publico(row: typeof usuarios.$inferSelect): AuthUser {
     rol: row.rol,
     activo: row.activo,
   };
+}
+
+/** RF-V8: opciones del filtro de vendedores, sin exponer la API de usuarios. */
+export async function listarActivos(usuario: AuthUser) {
+  requireAuth(usuario);
+  return db
+    .select({ id: usuarios.id, nombre: usuarios.nombre })
+    .from(usuarios)
+    .where(eq(usuarios.activo, true))
+    .orderBy(asc(usuarios.nombre));
 }
 
 /** RF-U4: listado paginado, sin el hash de contraseña. */

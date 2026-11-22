@@ -15,6 +15,7 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { formatDate, formatMoney } from "@/lib/format";
 import * as clientesService from "@/lib/services/clientes.service";
 import * as facturasService from "@/lib/services/facturas.service";
+import * as usuariosService from "@/lib/services/usuarios.service";
 
 type Search = Record<string, string | string[] | undefined>;
 const valor = (params: Search, clave: string) => {
@@ -33,6 +34,7 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
   const forma = valor(params, "forma");
   const estado = valor(params, "estado");
   const clienteId = valor(params, "clienteId");
+  const vendedorId = valor(params, "vendedorId");
   const page = valor(params, "page") || "1";
 
   const query = new URLSearchParams({ page });
@@ -42,10 +44,12 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
   if (forma) query.set("forma", forma);
   if (estado) query.set("estado", estado);
   if (clienteId) query.set("clienteId", clienteId);
+  if (vendedorId) query.set("vendedorId", vendedorId);
 
-  const [facturas, clientes] = await Promise.all([
+  const [facturas, clientes, vendedores] = await Promise.all([
     facturasService.listar(user, query),
     clientesService.listar(user, new URLSearchParams("pageSize=100")),
+    usuariosService.listarActivos(user),
   ]);
 
   const filtros = [
@@ -80,6 +84,15 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
       opciones: [
         { value: "", label: "Todos" },
         ...clientes.data.map((c) => ({ value: String(c.id), label: c.nombre })),
+      ],
+    },
+    {
+      name: "vendedorId",
+      label: "Vendedor",
+      tipo: "select" as const,
+      opciones: [
+        { value: "", label: "Todos" },
+        ...vendedores.map((v) => ({ value: String(v.id), label: v.nombre })),
       ],
     },
   ];
@@ -159,7 +172,7 @@ export default async function VentasPage({ searchParams }: { searchParams: Promi
               page={facturas.page}
               pageSize={facturas.pageSize}
               total={facturas.total}
-              params={{ q, desde, hasta, forma, estado, clienteId }}
+              params={{ q, desde, hasta, forma, estado, clienteId, vendedorId }}
             />
           </>
         )}

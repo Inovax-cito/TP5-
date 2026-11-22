@@ -66,7 +66,7 @@ export function NuevaVentaForm({
   const [tarjeta, setTarjeta] = useState({ tipo: "debito", marca: "Visa", ultimos4: "" });
   const [clienteDialog, setClienteDialog] = useState(false);
 
-  const { ejecutar, errores, errorGeneral, cargando } = useApiMutation(
+  const { ejecutar, errores, errorGeneral, cargando, marcarErrores } = useApiMutation(
     emitirFacturaSchema,
     "Factura emitida correctamente.",
   );
@@ -116,22 +116,23 @@ export function NuevaVentaForm({
   }
 
   async function confirmar() {
+    // Sección 8: los errores se muestran junto al campo, no sólo en un toast.
     if (items.length === 0) {
-      toast.error("Agregá al menos un producto.");
+      marcarErrores({ items: "Agregá al menos un producto." });
       return;
     }
     if (forma === "cuenta_corriente" && (!cliente || !cliente.cuentaCorriente)) {
-      toast.error("Para vender a cuenta se necesita un cliente con cuenta corriente habilitada.");
+      marcarErrores({ clienteId: "Para vender a cuenta se necesita un cliente con cuenta corriente habilitada." });
       return;
     }
-    if (forma === "cuenta_corriente" && cliente?.limiteCredito !== null && cliente) {
-      if (cliente.saldo + total > cliente.limiteCredito!) {
-        toast.error("La venta supera el límite de crédito del cliente.");
+    if (forma === "cuenta_corriente" && cliente && cliente.limiteCredito !== null) {
+      if (cliente.saldo + total > cliente.limiteCredito) {
+        marcarErrores({ clienteId: "La venta supera el límite de crédito del cliente." });
         return;
       }
     }
     if (forma === "contado" && montoRecibido > 0 && montoRecibido < total) {
-      toast.error("El monto recibido no cubre el total.");
+      marcarErrores({ "pago.montoRecibido": "El monto recibido no cubre el total." });
       return;
     }
 
@@ -154,7 +155,16 @@ export function NuevaVentaForm({
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
+    <div
+      className="grid gap-6 xl:grid-cols-[1fr_360px]"
+      onKeyDown={(e) => {
+        // Sección 8: operación con teclado (buscar, Enter para agregar, Ctrl+Enter para confirmar).
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && (e.target as HTMLElement).tagName !== "BUTTON") {
+          e.preventDefault();
+          void confirmar();
+        }
+      }}
+    >
       <div className="space-y-6">
         <Card>
           <CardHeader>
@@ -188,6 +198,13 @@ export function NuevaVentaForm({
                 placeholder="Buscar cliente por nombre o documento…"
                 value={buscaCliente}
                 onChange={(e) => setBuscaCliente(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && clientesFiltrados[0]) {
+                    e.preventDefault();
+                    setClienteId(clientesFiltrados[0].id);
+                    setBuscaCliente("");
+                  }
+                }}
               />
             </div>
             {buscaCliente && (
@@ -213,6 +230,7 @@ export function NuevaVentaForm({
                 )}
               </div>
             )}
+            {errores.clienteId && <p className="text-xs text-destructive">{errores.clienteId}</p>}
           </CardContent>
         </Card>
 
@@ -413,6 +431,7 @@ export function NuevaVentaForm({
                 )}
               </TabsContent>
             </Tabs>
+            {errores["pago.forma"] && <p className="mt-2 text-xs text-destructive">{errores["pago.forma"]}</p>}
           </CardContent>
         </Card>
 
@@ -445,6 +464,9 @@ export function NuevaVentaForm({
           <Button className="w-full" size="lg" onClick={confirmar} disabled={cargando || items.length === 0}>
             {cargando ? "Confirmando…" : "Confirmar venta"}
           </Button>
+          <p className="text-center text-xs text-muted-foreground">
+            Enter agrega productos · Ctrl+Enter confirma la venta.
+          </p>
           <p className="text-center text-xs text-muted-foreground">
             El número definitivo se asigna al confirmar.
           </p>

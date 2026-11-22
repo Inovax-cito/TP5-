@@ -65,5 +65,11 @@ export function useApiMutation<S extends z.ZodType>(schema: S, mensajePorDefecto
     setErrorGeneral(null);
   }
 
-  return { ejecutar, errores, errorGeneral, cargando, limpiar };
+  /** Errores de validación local, para pintarlos junto al campo (sección 8). */
+  function marcarErrores(nuevos: Record<string, string>, mensaje: string | null = null) {
+    setErrores(nuevos);
+    setErrorGeneral(mensaje);
+  }
+
+  return { ejecutar, errores, errorGeneral, cargando, limpiar, marcarErrores };
 }

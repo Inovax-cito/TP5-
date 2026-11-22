@@ -1,4 +1,5 @@
 import { AlertCircle, Inbox, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -46,9 +47,9 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
       <p className="font-semibold">No se pudo cargar la información</p>
       <p className="text-sm text-muted-foreground">{message}</p>
       {onRetry && (
-        <button onClick={onRetry} className="text-sm font-medium text-primaryText hover:underline">
+        <Button variant="outline" size="sm" onClick={onRetry}>
           Reintentar
-        </button>
+        </Button>
       )}
     </Card>
   );

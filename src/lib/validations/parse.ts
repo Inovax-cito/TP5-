@@ -21,3 +21,8 @@ export function parseOrThrow<S extends z.ZodType>(schema: S, data: unknown): z.o
 
   throw new ApiError(422, "VALIDACION", "Hay campos con errores.", details);
 }
+
+/** Igual que parseOrThrow, pero para query params de listados (sección 11.1). */
+export function parseQuery<S extends z.ZodType>(schema: S, query: URLSearchParams): z.output<S> {
+  return parseOrThrow(schema, Object.fromEntries(query.entries()));
+}

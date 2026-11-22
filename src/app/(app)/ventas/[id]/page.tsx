@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getCurrentUser } from "@/lib/auth/current-user";
+import { getDatosComercio } from "@/lib/comercio";
 import { ApiError } from "@/lib/errors";
 import { formatDateTimeArg, formatMoney } from "@/lib/format";
 import * as facturasService from "@/lib/services/facturas.service";
@@ -41,6 +42,7 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
     vuelto?: number;
     tarjeta?: { tipo: string; marca: string; ultimos4: string };
   };
+  const comercio = getDatosComercio();
 
   return (
     <div className="space-y-6">
@@ -79,8 +81,9 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
               <EstadoFacturaBadge estado={factura.estado} />
               <FormaPagoBadge forma={pago.forma} />
             </div>
-            <p className="mt-3 font-bold">Gestión Comercial</p>
+            <p className="mt-3 font-bold">{comercio.nombre}</p>
             <p className="text-xs text-muted-foreground">Comprobante interno · Sin validez fiscal</p>
+            {comercio.cuit && <p className="text-xs text-muted-foreground">CUIT {comercio.cuit}</p>}
           </div>
         </div>
 
@@ -93,6 +96,9 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
             <p className="text-xs text-muted-foreground">
               {factura.cliente ? `${factura.cliente.tipoDoc} ${factura.cliente.nroDoc}` : "Sin documento"}
             </p>
+            {factura.cliente?.domicilio && (
+              <p className="text-xs text-muted-foreground">{String(factura.cliente.domicilio)}</p>
+            )}
           </div>
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">Vendedor</p>
@@ -161,8 +167,11 @@ export default async function FacturaDetallePage({ params }: { params: Promise<{
           </div>
         </div>
 
-        <div className="mt-12 border-t pt-6 text-center text-xs text-muted-foreground">
-          Generado por el Sistema de Gestión Comercial
+        <div className="mt-12 space-y-1 border-t pt-6 text-center text-xs text-muted-foreground">
+          <p className="font-semibold">{comercio.nombre}</p>
+          {comercio.direccion && <p>{comercio.direccion}</p>}
+          {comercio.telefono && <p>Tel. {comercio.telefono}</p>}
+          <p>Generado por el Sistema de Gestión Comercial</p>
         </div>
       </Card>
     </div>

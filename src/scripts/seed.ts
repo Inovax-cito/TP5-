@@ -4,7 +4,19 @@ config();
 
 import { eq, sql } from "drizzle-orm";
 import { db } from "../lib/db";
-import { categorias, productos, secuencias, usuarios, type AuthUser } from "../lib/db/schema";
+import {
+  categorias,
+  clientes,
+  facturaItems,
+  facturas,
+  movimientosCuenta,
+  movimientosStock,
+  pagos,
+  productos,
+  secuencias,
+  usuarios,
+  type AuthUser,
+} from "../lib/db/schema";
 import { CATALOGO } from "../lib/catalogo";
 import { hashPassword } from "../lib/auth/password";
 import * as categoriasService from "../lib/services/categorias.service";
@@ -55,7 +67,32 @@ async function completarImagenes() {
   if (sinImagen.length) console.log(`  ${sinImagen.length} miniaturas asignadas.`);
 }
 
+/**
+ * RF - datos de prueba repetibles: si una carga anterior quedó a medias,
+ * `pnpm run db:reset` limpia en orden seguro (respetando claves foráneas) y
+ * vuelve a generar exactamente el mismo conjunto desde cero.
+ */
+async function reset() {
+  for (const tabla of [
+    pagos,
+    movimientosCuenta,
+    facturaItems,
+    movimientosStock,
+    facturas,
+    secuencias,
+    clientes,
+    productos,
+    categorias,
+    usuarios,
+  ]) {
+    await db.delete(tabla);
+  }
+  console.log("Datos anteriores eliminados.");
+}
+
 async function main() {
+  if (process.argv.includes("--reset")) await reset();
+
   const [existente] = await db.select({ id: usuarios.id }).from(usuarios).limit(1);
   if (existente) {
     await completarImagenes();
