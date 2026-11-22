@@ -1,18 +1,15 @@
 import { defineConfig } from "drizzle-kit";
+import { config } from "dotenv";
 
-// drizzle-kit no lee .env solo: lo cargamos si existe (Node >= 20.12).
-try {
-  process.loadEnvFile(".env");
-} catch {
-  // Sin .env: se usan las variables del entorno (por ejemplo, en Vercel).
-}
+config();
 
 export default defineConfig({
-  dialect: "turso",
-  schema: "./src/db/schema.ts",
+  schema: "./src/lib/db/schema.ts",
   out: "./drizzle",
+  dialect: "sqlite",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "file:local.db",
-    authToken: process.env.DATABASE_AUTH_TOKEN || undefined,
+    url: process.env.DATABASE_URL ?? "file:./dev.db",
   },
+  strict: true,
+  verbose: true,
 });
