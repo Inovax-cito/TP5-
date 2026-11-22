@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppToaster } from "@/components/common/app-toaster";
+import { ThemeProvider } from "@/components/common/theme-provider";
 import "./globals.css";
 
 /** Tipografías: Geist para la interfaz y Geist Mono para importes, números y códigos. */
@@ -14,10 +15,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es-AR" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="es-AR" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body>
-        {children}
-        <AppToaster />
+        <ThemeProvider>
+          {children}
+          <AppToaster />
+        </ThemeProvider>
       </body>
     </html>
   );

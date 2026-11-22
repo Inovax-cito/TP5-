@@ -1,12 +1,15 @@
 "use client";
 
 import { CircleAlert, CircleCheck, Info, LoaderCircle, TriangleAlert } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Toaster } from "sonner";
 
 /** Avisos (sección 8) con los colores del tema: cada tipo usa su token y su ícono. */
 export function AppToaster() {
+  const { resolvedTheme } = useTheme();
   return (
     <Toaster
+      theme={resolvedTheme === "dark" ? "dark" : "light"}
       position="top-right"
       richColors
       closeButton

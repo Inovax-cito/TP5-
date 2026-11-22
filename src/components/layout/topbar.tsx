@@ -17,6 +17,7 @@ import {
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { RolBadge } from "@/components/common/status-badge";
 import { BrandMark } from "./brand-mark";
+import { ThemeToggle } from "./theme-toggle";
 import { SidebarNav } from "./sidebar-nav";
 import { iniciales } from "@/lib/utils";
 import type { AuthUser } from "@/lib/db/schema";
@@ -107,6 +108,7 @@ export function Topbar({ user, acciones }: { user: AuthUser; acciones?: React.Re
 
         <div className="flex shrink-0 items-center gap-1.5">
           {acciones}
+          <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-10 gap-2.5 rounded-full pl-1 pr-1 sm:rounded-control sm:pr-2.5">

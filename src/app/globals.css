@@ -145,6 +145,78 @@
   }
 }
 
+/*
+ * Modo oscuro. Va dentro de @media screen: la impresión del comprobante y del recibo
+ * siempre usa los tokens claros, aunque la pantalla esté en oscuro.
+ */
+@media screen {
+  .dark {
+    color-scheme: dark;
+
+    /* Neutros invertidos: las clases neutral-* siguen significando "más o menos contraste". */
+    --neutral-50: 24 10% 7%;
+    --neutral-100: 24 8% 10%;
+    --neutral-200: 24 7% 15%;
+    --neutral-300: 24 6% 22%;
+    --neutral-400: 28 5% 34%;
+    --neutral-500: 30 5% 48%;
+    --neutral-600: 30 6% 62%;
+    --neutral-700: 30 8% 74%;
+    --neutral-800: 30 10% 85%;
+    --neutral-900: 30 14% 92%;
+    --neutral-950: 30 20% 97%;
+
+    --background: 24 10% 5.5%;
+    --foreground: 30 15% 93%;
+    --card: 24 9% 8.5%;
+    --card-foreground: 30 15% 93%;
+    --popover: 24 9% 10%;
+    --popover-foreground: 30 15% 93%;
+    --muted: 24 7% 13%;
+    --muted-foreground: 30 8% 64%;
+    --secondary: 24 7% 14%;
+    --secondary-foreground: 30 15% 93%;
+    --accent: 25 55% 13%;
+    --accent-foreground: 28 100% 72%;
+    --border: 24 7% 17%;
+    --input: 24 7% 22%;
+
+    --primary: 25 100% 53%;
+    --primary-foreground: 24 14% 6%;
+    --primary-text: 27 100% 64%;
+    --ring: 25 100% 56%;
+
+    /* En oscuro los tonos se aclaran y llevan texto oscuro encima (AA en ambos sentidos). */
+    --destructive: 0 80% 66%;
+    --destructive-foreground: 0 0% 8%;
+    --success: 150 55% 52%;
+    --success-foreground: 24 14% 6%;
+    --warning: 38 95% 60%;
+    --warning-foreground: 24 14% 6%;
+    --info: 213 90% 68%;
+    --info-foreground: 24 14% 6%;
+
+    --sidebar: 24 12% 4%;
+    --sidebar-foreground: 30 12% 92%;
+    --sidebar-muted: 30 6% 58%;
+    --sidebar-accent: 25 100% 55%;
+    --sidebar-accent-foreground: 24 14% 6%;
+    --sidebar-hover: 24 8% 9%;
+    --sidebar-border: 24 8% 12%;
+
+    --chart-1: 25 100% 56%;
+    --chart-2: 30 12% 80%;
+    --chart-3: 40 95% 62%;
+    --chart-4: 30 6% 46%;
+    --chart-5: 18 70% 70%;
+    --chart-grid: 24 7% 15%;
+
+    --shadow-1: 0 1px 2px hsl(0 0% 0% / 0.4), 0 0 0 1px hsl(0 0% 100% / 0.02);
+    --shadow-2: 0 2px 4px hsl(0 0% 0% / 0.35), 0 10px 24px -8px hsl(0 0% 0% / 0.55);
+    --shadow-3: 0 4px 8px hsl(0 0% 0% / 0.35), 0 24px 56px -12px hsl(0 0% 0% / 0.7);
+  }
+}
+
 @layer utilities {
   /* Importes, números de comprobante, códigos y documentos: mono con cifras tabulares. */
   .tabular {
@@ -206,6 +278,7 @@
   body {
     background: white !important;
     color: black !important;
+    color-scheme: light !important;
   }
   .print-full {
     width: 100% !important;
