@@ -19,7 +19,7 @@ Aplicación full stack para un comercio minorista: factura ventas, controla exis
 - **URL pública:** [https://tp-5-ivory.vercel.app](https://tp-5-ivory.vercel.app)
 - **Repositorio GitHub:** [https://github.com/Inovax-cito/TP5-](https://github.com/Inovax-cito/TP5-)
 
-La aplicación está desplegada en Vercel y usa una base de datos en Turso (ver [Base de datos en producción](#base-de-datos-en-producción)). La sección [Despliegue](#despliegue-vercel--turso) explica cómo se hizo y cómo repetirlo. Para ensayar la defensa, ver [DEFENSA.md](./DEFENSA.md).
+La aplicación está desplegada en Vercel y usa una base de datos en Turso (ver [Base de datos en producción](#base-de-datos-en-producción)). La sección [Despliegue](#despliegue-vercel--turso) explica cómo se hizo y cómo repetirlo.
 
 ---
 
@@ -267,7 +267,7 @@ pnpm run db:verify
 
 - `/login` con ambos usuarios de prueba.
 - `/`, `/productos`, `/productos/categorias` (miniaturas), `/ventas/nueva`.
-- Recorrido completo de la [demo de defensa](./DEFENSA.md): venta en efectivo → venta en cuenta corriente → pago → anulación, controlando stock y saldo en cada paso.
+- Recorrido completo recomendado: venta en efectivo → venta en cuenta corriente → pago → anulación, controlando stock y saldo en cada paso.
 - `pnpm run db:verify` contra Turso debe terminar con `OK: las reglas 1, 2, 7 y 8 se cumplen.`
 
 > La base local `dev.db` es solo desarrollo; no se incluye en el repositorio. El filesystem de Vercel es de solo lectura: por eso la base es remota en Turso y no se suben imágenes a disco.
