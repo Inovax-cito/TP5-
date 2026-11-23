@@ -51,7 +51,7 @@ En la pantalla de login, los botones **Administrador** y **Vendedor** del modo d
 
 El seed crea además **5 categorías, 30 productos, 10 clientes, 50 facturas repartidas en los últimos 30 días** y varios pagos. Las facturas y los pagos se generan llamando a los **mismos servicios** que usa la aplicación, por lo que stock, saldos y numeración ya cumplen todas las reglas de negocio.
 
-Cada producto tiene una miniatura SVG en `public/productos/<codigo>.svg` (`pnpm run img:generate` las regenera) y el campo `imagen` de la tabla `productos` guarda su ruta o una URL `http(s)`. Se muestran en el catálogo, en la vista previa de cada categoría, en la ficha del producto y al buscar productos para una venta. Desde el formulario de producto se puede reemplazar la imagen por cualquier URL pública; si no carga, se muestra un ícono de respaldo.
+Cada producto tiene una miniatura en `public/productos/<codigo>.svg`: una foto real de Wikimedia Commons con licencia libre incrustada en el SVG (autores y licencias en [`public/productos/CREDITOS.md`](public/productos/CREDITOS.md)). `pnpm run img:generate` solo crea las que falten y no pisa las fotos. El campo `imagen` de la tabla `productos` guarda su ruta o una URL `http(s)`. Se muestran en el catálogo, en la vista previa de cada categoría, en la ficha del producto y al buscar productos para una venta. Desde el formulario de producto se puede reemplazar la imagen por cualquier URL pública; si no carga, se muestra un ícono de respaldo.
 
 ### Comandos útiles
 
@@ -60,7 +60,7 @@ Cada producto tiene una miniatura SVG en `public/productos/<codigo>.svg` (`pnpm 
 | `pnpm run dev` | Servidor de desarrollo |
 | `pnpm run build` / `pnpm run start` | Build de producción y servidor |
 | `pnpm run typecheck` | Verificación de tipos (sin emitir archivos) |
-| `pnpm run img:generate` | Regenerar las 30 miniaturas SVG de los productos |
+| `pnpm run img:generate` | Crear las miniaturas SVG que falten (no pisa las fotos) |
 | `pnpm run db:generate` | Generar una migración nueva con drizzle-kit |
 | `pnpm run db:migrate` | Aplicar migraciones a la base configurada en `DATABASE_URL` |
 | `pnpm run db:seed` | Cargar datos de prueba (verifica que la base esté vacía) |

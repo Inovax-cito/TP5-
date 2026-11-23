@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { CATALOGO } from "../lib/catalogo";
 
@@ -44,7 +44,11 @@ async function main() {
 </svg>
 `;
 
-    await writeFile(path.join(destino, `${codigo}.svg`), svg, "utf8");
+    // Si el archivo ya tiene una foto real (ver public/productos/CREDITOS.md), no se pisa.
+    const archivo = path.join(destino, `${codigo}.svg`);
+    const actual = await readFile(archivo, "utf8").catch(() => "");
+    if (actual.includes("<image")) continue;
+    await writeFile(archivo, svg, "utf8");
   }
   console.log(`${CATALOGO.length} miniaturas generadas en public/productos.`);
 }
