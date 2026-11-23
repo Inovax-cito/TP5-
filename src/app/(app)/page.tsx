@@ -80,7 +80,7 @@ export default async function InicioPage() {
       />
 
       <Grid gap="4" cols={{ lg: 2 }}>
-        <Card>
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
             <Stack gap="1.5">
               <CardTitle>Productos más vendidos</CardTitle>
@@ -125,7 +125,7 @@ export default async function InicioPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
             <Stack gap="1.5">
               <CardTitle>Reposición pendiente</CardTitle>

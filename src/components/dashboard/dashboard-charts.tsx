@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArcElement,
   CategoryScale,
@@ -16,6 +16,7 @@ import {
 import { Doughnut, Line } from "react-chartjs-2";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDayMonth, formatMoney, formatMoneyCompact, formatPercent } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Filler);
 
@@ -71,6 +72,17 @@ type Props = {
 
 export function DashboardCharts({ ventasDiarias, porFormaDePago }: Props) {
   const t = useTokens();
+  // Segmento de la dona señalado (mouse, toque o leyenda): se muestra en el centro.
+  const [activo, setActivo] = useState<number | null>(null);
+  const dona = useRef<ChartJS<"doughnut">>(null);
+
+  function resaltar(indice: number | null) {
+    setActivo(indice);
+    const chart = dona.current;
+    if (!chart) return;
+    chart.setActiveElements(indice === null ? [] : [{ datasetIndex: 0, index: indice }]);
+    chart.update();
+  }
   const totalFormas = porFormaDePago.reduce((acc, f) => acc + f.importe, 0);
   const total30 = ventasDiarias.reduce((acc, v) => acc + v.importe, 0);
 
@@ -161,11 +173,18 @@ export function DashboardCharts({ ventasDiarias, porFormaDePago }: Props) {
     responsive: true,
     maintainAspectRatio: false,
     cutout: "72%",
+    layout: { padding: 8 },
+    // Sin cuadro flotante: en un lienzo tan chico se cortaba. El detalle va en el centro.
+    onHover: (_evento, elementos) => setActivo(elementos[0]?.index ?? null),
+    // En celulares el toque llega como click.
+    onClick: (_evento, elementos) => setActivo(elementos[0]?.index ?? null),
     plugins: {
       legend: { display: false },
-      tooltip: { ...tooltip!, displayColors: true, callbacks: { label: (ctx) => ` ${ctx.label}: ${formatMoney(Number(ctx.parsed))}` } },
+      tooltip: { enabled: false },
     },
   };
+
+  const seleccion = activo !== null ? porFormaDePago[activo] : null;
 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
@@ -191,17 +210,31 @@ export function DashboardCharts({ ventasDiarias, porFormaDePago }: Props) {
           <CardDescription>Distribución de lo facturado.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
-          <div className="relative mx-auto h-44 w-44">
-            {opcionesDona && datosDona ? <Doughnut data={datosDona} options={opcionesDona} /> : null}
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-micro uppercase text-muted-foreground">Total del mes</span>
-              <span className="tabular text-sm font-semibold">{formatMoney(totalFormas)}</span>
+          <div className="relative mx-auto h-48 w-48" onMouseLeave={() => resaltar(null)}>
+            {opcionesDona && datosDona ? <Doughnut ref={dona} data={datosDona} options={opcionesDona} /> : null}
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-9 text-center" aria-live="polite">
+              <span className="text-micro uppercase text-muted-foreground">
+                {seleccion ? (etiquetasForma[seleccion.forma] ?? seleccion.forma) : "Total del mes"}
+              </span>
+              <span className="tabular text-[13px] font-semibold leading-6">
+                {formatMoney(seleccion ? seleccion.importe : totalFormas)}
+              </span>
+              {seleccion && totalFormas > 0 && (
+                <span className="tabular text-[11px] text-muted-foreground">{formatPercent(seleccion.importe / totalFormas)}</span>
+              )}
             </div>
           </div>
           {porFormaDePago.length > 0 && (
-            <ul className="space-y-2.5">
+            <ul className="space-y-1" onMouseLeave={() => resaltar(null)}>
               {porFormaDePago.map((f, i) => (
-                <li key={f.forma} className="flex items-center gap-3 text-sm">
+                <li
+                  key={f.forma}
+                  onMouseEnter={() => resaltar(i)}
+                  className={cn(
+                    "-mx-2 flex items-center gap-3 rounded-control px-2 py-1.5 text-sm transition-colors",
+                    activo === i ? "bg-muted" : activo !== null && "opacity-55",
+                  )}
+                >
                   <span
                     className={["h-2.5 w-2.5 shrink-0 rounded-full", ["bg-chart-1", "bg-chart-2", "bg-chart-3", "bg-chart-4", "bg-chart-5"][i % 5]].join(" ")}
                   />
