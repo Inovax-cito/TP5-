@@ -11,7 +11,7 @@ Aplicación full stack para un comercio minorista: factura ventas, controla exis
 | Legajo | Integrante |
 | --- | --- |
 | `61087` | Pérez Joaquín |
-| `61175` | Risoo Aaron Ezequiel |
+| `61175` | Risso Aaron Ezequiel |
 | `55656` | Lombardo Ríos Benjamín |
 
 > Cada integrante puede explicar y modificar cualquier parte del código (defensa individual).
