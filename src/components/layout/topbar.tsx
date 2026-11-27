@@ -18,6 +18,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { RolBadge } from "@/components/common/status-badge";
 import { BrandMark } from "./brand-mark";
 import { ThemeToggle } from "./theme-toggle";
+import { Integrantes } from "./integrantes";
 import { SidebarNav } from "./sidebar-nav";
 import { iniciales } from "@/lib/utils";
 import type { AuthUser } from "@/lib/db/schema";
@@ -107,6 +108,7 @@ export function Topbar({ user, acciones }: { user: AuthUser; acciones?: React.Re
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5">
+          <Integrantes />
           {acciones}
           <ThemeToggle />
           <DropdownMenu>
